@@ -2,33 +2,39 @@
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%; /* Ensures the body and html take up full height */
+  height: 100%;
   display: flex;
-  flex-direction: column; /* Allows the main content and footer to stack vertically */
+  flex-direction: column;
 }
 
-/* Main Content Wrapper */
+/* Ensure the main content fills available space */
 .main-content {
-  flex: 1; /* Makes this section take up remaining space */
-  padding: 20px; /* Optional padding for content */
+  flex: 1;
+  padding: 20px;
   box-sizing: border-box;
 }
 
-/* Footer Styles */
+/* Sticky Footer */
 .footer {
   background-color: #2f4046;
   color: white;
-  padding: 20px 10px; /* Added horizontal padding for smaller screens */
+  padding: 10px;
   text-align: center;
-  box-sizing: border-box; /* Ensures padding is included in total width */
+  box-sizing: border-box;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+
 }
 
+/* Footer Text */
 .footer p {
   margin: 0;
-  font-size: 14px; /* Adjusted font size for readability */
-  line-height: 1.5; /* Improved line spacing */
+  font-size: 14px;
+  line-height: 1.5;
 }
 
+/* Social Links */
 .social-links {
   list-style: none;
   display: flex;
@@ -36,17 +42,17 @@ body, html {
   gap: 15px;
   margin: 10px 0 0;
   padding: 0;
-  flex-wrap: wrap; /* Allows wrapping for smaller screens */
+  flex-wrap: wrap;
 }
 
 .social-links li {
-  margin: 0; /* Ensure no extra spacing around items */
+  margin: 0;
 }
 
 .social-links li a {
   text-decoration: none;
   color: white;
-  font-size: 16px; /* Adjusted font size for visibility */
+  font-size: 16px;
   transition: color 0.3s ease;
 }
 
@@ -54,15 +60,15 @@ body, html {
   color: #ffcc00;
 }
 
-/* Responsive Adjustments for Footer */
+/* Responsive Design */
 @media screen and (max-width: 768px) {
   .social-links {
-    flex-direction: column; /* Stack items vertically on small screens */
+    flex-direction: column;
     gap: 10px;
-    align-items: center; /* Center-align social links */
+    align-items: center;
   }
 
   .footer p {
-    font-size: 12px; /* Slightly smaller text for compact screens */
+    font-size: 12px;
   }
 }

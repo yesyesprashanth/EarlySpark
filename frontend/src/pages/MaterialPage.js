@@ -459,7 +459,7 @@ const MaterialPage = () => {
 
   return (
     <div className="material-page">
-      <h2>Medical Content Manager</h2>
+      <h2>Admin Page</h2>
 
       {/* Department Section */}
       <div className="form-group">

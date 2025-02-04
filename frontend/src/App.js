@@ -94,8 +94,8 @@ const App = () => {
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
           <Route path="/library" element={<Layout><Library /></Layout>} />
           <Route path="/libraryvideo" element={<Layout><LibraryVideo /></Layout>} />
-          <Route path="/screening" element={<ScreeningQuestionnaire />} />
-          <Route path="/material" element={ <MaterialPage/>} />
+          <Route path="/screening" element={<Layout><ScreeningQuestionnaire /></Layout>} />
+          <Route path="/material" element={ <Layout><MaterialPage/></Layout>} />
         </Routes>
       </Router>
     </DataContextProvider>

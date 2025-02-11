@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import InstituteRegistration from '../forms/InstituteRegistration';
-import SchoolRegistration from '../forms/SchoolRegistration';
+import InstituteRegistration from '../forms/CenterRegistration';
+import SchoolRegistration from '../forms/NodeRegistration';
 import './RegistrationModal.css';
 
 const RegistrationModal = ({ closeModal }) => {
@@ -25,8 +25,8 @@ const RegistrationModal = ({ closeModal }) => {
 
       {!selectedCategory ? (
         <div className="options">
-          <button onClick={() => handleCategoryClick('Institute/Clinics')}>Institute/Clinics</button>
-          <button onClick={() => handleCategoryClick('School')}>School</button>
+          <button onClick={() => handleCategoryClick('Institute/Clinics')}>Center</button>
+          <button onClick={() => handleCategoryClick('School')}>Node</button>
         </div>
       ) : (
         <div className="modal-content">

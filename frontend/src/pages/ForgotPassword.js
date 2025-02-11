@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ForgotPassword.css';
+import { Container, Box, TextField, Button, Typography } from '@mui/material';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -15,30 +15,42 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="forgot-password-page">
-            <div className='school'>
-                <h1>EarlySpark</h1>
-            </div>
-            <div className="forgot-password-form">
-                <h2>Forgot Password</h2>
-             
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter your email"
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="submit-btn">Send Reset Link</button>
+        <Container maxWidth="xs">
+            <Box sx={{ mt: 1, p: 4, boxShadow: 3, borderRadius: 2 }}>
+                <Typography variant="h6" align="center" gutterBottom sx={{ color: "#a5e526" }}>
+                    Forgot Password
+                </Typography>
+
+                <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                    <TextField
+                        label="Email"
+                        type="email"
+                        fullWidth
+                        variant="outlined"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        margin="normal"
+                        size="small"
+                        required
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{ mt: 2 }}
+                    >
+                        Send Reset Link
+                    </Button>
                 </form>
-                {message && <p className="success-message">{message}</p>}
-            </div>
-        </div>
+
+                {message && (
+                    <Typography variant="body2" color="success.main" sx={{ mt: 2 }}>
+                        {message}
+                    </Typography>
+                )}
+            </Box>
+        </Container>
     );
 };
 

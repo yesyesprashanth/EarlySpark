@@ -1,305 +1,22 @@
-// import React, { useState } from "react";
-// import "./MaterialPage.css";
-
-// const initialData = [
-//   {
-//     id: "dept1",
-//     name: "Cardiology",
-//     diagnoses: [
-//       {
-//         id: "diag1",
-//         name: "Heart Disease",
-//         chapters: [
-//           {
-//             id: "chap1",
-//             name: "Chapter 1",
-//             subchapters: [
-//               { id: "sub1", name: "Subchapter 1A" },
-//               { id: "sub2", name: "Subchapter 1B" }
-//             ]
-//           }
-//         ]
-//       }
-//     ]
-//   },
-//   {
-//     id: "dept2",
-//     name: "Nurology",
-//     diagnoses: [
-//       {
-//         id: "diag1",
-//         name: "Heart Disease",
-//         chapters: [
-//           {
-//             id: "chap1",
-//             name: "Chapter 1",
-//             subchapters: [
-//               { id: "sub1", name: "Subchapter 1A" },
-//               { id: "sub2", name: "Subchapter 1B" }
-//             ]
-//           }
-//         ]
-//       }
-//     ]
-//   }
-// ];
-
-// const MaterialPage = () => {
-//   const [ data, setData] = useState(initialData);
-
-
-//   const [selected, setSelected] = useState({
-//     departmentId: "",
-//     diagnosisId: "",
-//     chapterId: "",
-//     subchapterId: ""
-//   });
-  
-//   const [newEntries, setNewEntries] = useState({
-//     department: "",
-//     diagnosis: "",
-//     chapter: "",
-//     subchapter: ""
-//   });
-
-//   const [videoLink, setVideoLink] = useState("");
-//   const [documents, setDocuments] = useState([]);
-
-//   // Helper functions to get current selections
-
-//   const currentDepartment = data.find(d => d.id === selected.departmentId);
-//   const currentDiagnosis = currentDepartment?.diagnoses?.find(d => d.id === selected.diagnosisId);
-//   const currentChapter = currentDiagnosis?.chapters?.find(c => c.id === selected.chapterId);
-
-//   const handleSelect = (level, value) => {
-//     setSelected(prev => ({
-//       ...prev,
-//       [level]: value,
-//       // Reset downstream selections
-//       ...(level === "departmentId" && { 
-//         diagnosisId: "", 
-//         chapterId: "", 
-//         subchapterId: "" 
-//       }),
-//       ...(level === "diagnosisId" && { 
-//         chapterId: "", 
-//         subchapterId: "" 
-//       }),
-//       ...(level === "chapterId" && { 
-//         subchapterId: "" 
-//       })
-//     }));
-//   };
-
-//   const addNewEntry = (level) => {
-//     const newName = newEntries[level];
-//     if (!newName) return;
-
-//     setData(prev => {
-//       const newData = [...prev];
-//       switch(level) {
-//         case "department":
-//           newData.push({
-//             id: `dept${Date.now()}`,
-//             name: newName,
-//             diagnoses: []
-//           });
-//           break;
-
-//         case "diagnosis":
-//           const deptIndex = newData.findIndex(d => d.id === selected.departmentId);
-//           if (deptIndex > -1) {
-//             newData[deptIndex].diagnoses.push({
-//               id: `diag${Date.now()}`,
-//               name: newName,
-//               chapters: []
-//             });
-//           }
-//           break;
-
-//         case "chapter":
-//           const diagIndex = currentDepartment?.diagnoses?.findIndex(d => d.id === selected.diagnosisId);
-//           if (diagIndex > -1) {
-//             newData.forEach(dept => {
-//               if (dept.id === selected.departmentId) {
-//                 dept.diagnoses[diagIndex].chapters.push({
-//                   id: `chap${Date.now()}`,
-//                   name: newName,
-//                   subchapters: []
-//                 });
-//               }
-//             });
-//           }
-//           break;
-
-//         case "subchapter":
-//           const chapIndex = currentDiagnosis?.chapters?.findIndex(c => c.id === selected.chapterId);
-//           if (chapIndex > -1) {
-//             newData.forEach(dept => {
-//               if (dept.id === selected.departmentId) {
-//                 dept.diagnoses.forEach(diag => {
-//                   if (diag.id === selected.diagnosisId) {
-//                     diag.chapters[chapIndex].subchapters.push({
-//                       id: `sub${Date.now()}`,
-//                       name: newName
-//                     });
-//                   }
-//                 });
-//               }
-//             });
-//           }
-//           break;
-//       }
-//       return newData;
-//     });
-
-//     setNewEntries(prev => ({ ...prev, [level]: "" }));
-//   };
-
-//   return (
-//     <div className="material-page">
-//       <h2>Medical Content Manager</h2>
-
-//       {/* Department Section */}
-//       <div className="form-group">
-//         <label>Department</label>
-//         <select
-//           value={selected.departmentId}
-//           onChange={(e) => handleSelect("departmentId", e.target.value)}
-//         >
-//           <option value="">Select Department</option>
-//           {data.map(dept => (
-//             <option key={dept.id} value={dept.id}>{dept.name}</option>
-//           ))}
-//         </select>
-//         <div className="new-entry">
-//           <input
-//             type="text"
-//             placeholder="New department"
-//             value={newEntries.department}
-//             onChange={(e) => setNewEntries(p => ({ ...p, department: e.target.value }))}
-//           />
-//           <button onClick={() => addNewEntry("department")}>Add</button>
-//         </div>
-//       </div>
-
-//       {/* Diagnosis Section */}
-//       <div className="form-group">
-//         <label>Diagnosis</label>
-//         <select
-//           value={selected.diagnosisId}
-//           onChange={(e) => handleSelect("diagnosisId", e.target.value)}
-//           disabled={!selected.departmentId}
-//         >
-//           <option value="">Select Diagnosis</option>
-//           {currentDepartment?.diagnoses?.map(diag => (
-//             <option key={diag.id} value={diag.id}>{diag.name}</option>
-//           ))}
-//         </select>
-//         {selected.departmentId && (
-//           <div className="new-entry">
-//             <input
-//               type="text"
-//               placeholder="New diagnosis"
-//               value={newEntries.diagnosis}
-//               onChange={(e) => setNewEntries(p => ({ ...p, diagnosis: e.target.value }))}
-//             />
-//             <button onClick={() => addNewEntry("diagnosis")}>Add</button>
-//           </div>
-//         )}
-//       </div>
-
-//       {/* Chapter Section */}
-//       <div className="form-group">
-//         <label>Chapter</label>
-//         <select
-//           value={selected.chapterId}
-//           onChange={(e) => handleSelect("chapterId", e.target.value)}
-//           disabled={!selected.diagnosisId}
-//         >
-//           <option value="">Select Chapter</option>
-//           {currentDiagnosis?.chapters?.map(chap => (
-//             <option key={chap.id} value={chap.id}>{chap.name}</option>
-//           ))}
-//         </select>
-//         {selected.diagnosisId && (
-//           <div className="new-entry">
-//             <input
-//               type="text"
-//               placeholder="New chapter"
-//               value={newEntries.chapter}
-//               onChange={(e) => setNewEntries(p => ({ ...p, chapter: e.target.value }))}
-//             />
-//             <button onClick={() => addNewEntry("chapter")}>Add</button>
-//           </div>
-//         )}
-//       </div>
-
-//       {/* Subchapter Section */}
-//       <div className="form-group">
-//         <label>Subchapter</label>
-//         <select
-//           value={selected.subchapterId}
-//           onChange={(e) => handleSelect("subchapterId", e.target.value)}
-//           disabled={!selected.chapterId}
-//         >
-//           <option value="">Select Subchapter</option>
-//           {currentChapter?.subchapters?.map(sub => (
-//             <option key={sub.id} value={sub.id}>{sub.name}</option>
-//           ))}
-//         </select>
-//         {selected.chapterId && (
-//           <div className="new-entry">
-//             <input
-//               type="text"
-//               placeholder="New subchapter"
-//               value={newEntries.subchapter}
-//               onChange={(e) => setNewEntries(p => ({ ...p, subchapter: e.target.value }))}
-//             />
-//             <button onClick={() => addNewEntry("subchapter")}>Add</button>
-//           </div>
-//         )}
-//       </div>
-
-//       {/* Media Section */}
-//       <div className="form-group">
-//         <label>Video Link</label>
-//         <input
-//           type="url"
-//           value={videoLink}
-//           onChange={(e) => setVideoLink(e.target.value)}
-//           placeholder="Enter video URL"
-//         />
-//       </div>
-
-//       <div className="form-group">
-//         <label>Upload Documents</label>
-//         <input
-//           type="file"
-//           multiple
-//           onChange={(e) => setDocuments([...e.target.files])}
-//         />
-//         {documents.length > 0 && (
-//           <div className="file-list">
-//             Files: {documents.map(f => f.name).join(', ')}
-//           </div>
-//         )}
-//       </div>
-
-//       <button 
-//         className="submit-btn" 
-//         onClick={() => console.log("Final Data:", data)}
-//       >
-//         Submit
-//       </button>
-//     </div>
-//   );
-// };
-
-// export default MaterialPage;
-
 import React, { useState } from "react";
-import "./MaterialPage.css";
+import {
+  Container,
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 const MaterialPage = () => {
   // Main data structure
@@ -317,13 +34,13 @@ const MaterialPage = () => {
               name: "Chapter 1",
               subchapters: [
                 { id: "sub1", name: "Subchapter 1A" },
-                { id: "sub2", name: "Subchapter 1B" }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+                { id: "sub2", name: "Subchapter 1B" },
+              ],
+            },
+          ],
+        },
+      ],
+    },
   ]);
 
   // Selected values
@@ -331,7 +48,7 @@ const MaterialPage = () => {
     departmentId: "",
     diagnosisId: "",
     chapterId: "",
-    subchapterId: ""
+    subchapterId: "",
   });
 
   // New entry inputs
@@ -339,7 +56,7 @@ const MaterialPage = () => {
     department: "",
     diagnosis: "",
     chapter: "",
-    subchapter: ""
+    subchapter: "",
   });
 
   const [videoLink, setVideoLink] = useState("");
@@ -348,9 +65,9 @@ const MaterialPage = () => {
   // Handle selection changes
   const handleSelect = (level, value) => {
     const newState = { ...selected };
-    
+
     // Reset downstream selections
-    switch(level) {
+    switch (level) {
       case "departmentId":
         newState.diagnosisId = "";
         newState.chapterId = "";
@@ -364,7 +81,7 @@ const MaterialPage = () => {
         newState.subchapterId = "";
         break;
     }
-    
+
     newState[level] = value;
     setSelected(newState);
   };
@@ -375,51 +92,61 @@ const MaterialPage = () => {
     if (!value) return;
 
     const newDepartments = [...departments];
-    
-    switch(level) {
+
+    switch (level) {
       case "department":
         newDepartments.push({
           id: `dept${Date.now()}`,
           name: value,
-          diagnoses: []
+          diagnoses: [],
         });
         break;
-      
+
       case "diagnosis":
-        const deptIndex = newDepartments.findIndex(d => d.id === selected.departmentId);
+        const deptIndex = newDepartments.findIndex(
+          (d) => d.id === selected.departmentId
+        );
         if (deptIndex > -1) {
           newDepartments[deptIndex].diagnoses.push({
             id: `diag${Date.now()}`,
             name: value,
-            chapters: []
+            chapters: [],
           });
         }
         break;
-      
+
       case "chapter":
-        const dept = newDepartments.find(d => d.id === selected.departmentId);
+        const dept = newDepartments.find((d) => d.id === selected.departmentId);
         if (dept) {
-          const diagIndex = dept.diagnoses.findIndex(d => d.id === selected.diagnosisId);
+          const diagIndex = dept.diagnoses.findIndex(
+            (d) => d.id === selected.diagnosisId
+          );
           if (diagIndex > -1) {
             dept.diagnoses[diagIndex].chapters.push({
               id: `chap${Date.now()}`,
               name: value,
-              subchapters: []
+              subchapters: [],
             });
           }
         }
         break;
-      
+
       case "subchapter":
-        const deptWithSub = newDepartments.find(d => d.id === selected.departmentId);
+        const deptWithSub = newDepartments.find(
+          (d) => d.id === selected.departmentId
+        );
         if (deptWithSub) {
-          const diag = deptWithSub.diagnoses.find(d => d.id === selected.diagnosisId);
+          const diag = deptWithSub.diagnoses.find(
+            (d) => d.id === selected.diagnosisId
+          );
           if (diag) {
-            const chapIndex = diag.chapters.findIndex(c => c.id === selected.chapterId);
+            const chapIndex = diag.chapters.findIndex(
+              (c) => c.id === selected.chapterId
+            );
             if (chapIndex > -1) {
               diag.chapters[chapIndex].subchapters.push({
                 id: `sub${Date.now()}`,
-                name: value
+                name: value,
               });
             }
           }
@@ -428,169 +155,259 @@ const MaterialPage = () => {
     }
 
     setDepartments(newDepartments);
-    setNewEntry(prev => ({ ...prev, [level]: "" }));
+    setNewEntry((prev) => ({ ...prev, [level]: "" }));
   };
 
   // Handle form submission
   const handleSubmit = () => {
     const formData = {
-      department: departments.find(d => d.id === selected.departmentId)?.name,
-      diagnosis: departments.find(d => d.id === selected.departmentId)
-        ?.diagnoses.find(d => d.id === selected.diagnosisId)?.name,
-      chapter: departments.find(d => d.id === selected.departmentId)
-        ?.diagnoses.find(d => d.id === selected.diagnosisId)
-        ?.chapters.find(c => c.id === selected.chapterId)?.name,
-      subchapter: departments.find(d => d.id === selected.departmentId)
-        ?.diagnoses.find(d => d.id === selected.diagnosisId)
-        ?.chapters.find(c => c.id === selected.chapterId)
-        ?.subchapters.find(s => s.id === selected.subchapterId)?.name,
+      department: departments.find((d) => d.id === selected.departmentId)?.name,
+      diagnosis: departments
+        .find((d) => d.id === selected.departmentId)
+        ?.diagnoses.find((d) => d.id === selected.diagnosisId)?.name,
+      chapter: departments
+        .find((d) => d.id === selected.departmentId)
+        ?.diagnoses.find((d) => d.id === selected.diagnosisId)
+        ?.chapters.find((c) => c.id === selected.chapterId)?.name,
+      subchapter: departments
+        .find((d) => d.id === selected.departmentId)
+        ?.diagnoses.find((d) => d.id === selected.diagnosisId)
+        ?.chapters.find((c) => c.id === selected.chapterId)
+        ?.subchapters.find((s) => s.id === selected.subchapterId)?.name,
       videoLink,
-      documents: documents.map(file => file.name)
+      documents: documents.map((file) => file.name),
     };
-    
+
     console.log("Submitted Data:", formData);
     // Add your API call here
   };
 
   // Get current selections
-  const currentDepartment = departments.find(d => d.id === selected.departmentId);
-  const currentDiagnosis = currentDepartment?.diagnoses?.find(d => d.id === selected.diagnosisId);
-  const currentChapter = currentDiagnosis?.chapters?.find(c => c.id === selected.chapterId);
+  const currentDepartment = departments.find(
+    (d) => d.id === selected.departmentId
+  );
+  const currentDiagnosis = currentDepartment?.diagnoses?.find(
+    (d) => d.id === selected.diagnosisId
+  );
+  const currentChapter = currentDiagnosis?.chapters?.find(
+    (c) => c.id === selected.chapterId
+  );
 
   return (
-    <div className="material-page">
-      <h2>Admin Page</h2>
+    <Container maxWidth="xs">
+      <Box sx={{ mt: 4, p: 4, boxShadow: 3, borderRadius: 2 }}>
+         <Typography variant="h6" align="center" gutterBottom sx={{ color: "#a5e526" }}>
+          Admin Page
+        </Typography>
 
-      {/* Department Section */}
-      <div className="form-group">
-        <label>Department</label>
-        <select
-          value={selected.departmentId}
-          onChange={(e) => handleSelect("departmentId", e.target.value)}
-        >
-          <option value="">Select Department</option>
-          {departments.map(dept => (
-            <option key={dept.id} value={dept.id}>{dept.name}</option>
-          ))}
-        </select>
-        <div className="new-entry">
-          <input
-            type="text"
-            placeholder="New department"
-            value={newEntry.department}
-            onChange={(e) => setNewEntry(p => ({ ...p, department: e.target.value }))}
+        {/* Department Section */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Department</InputLabel>
+          <Select
+            value={selected.departmentId}
+            onChange={(e) => handleSelect("departmentId", e.target.value)}
+            label="Department"
+          >
+            <MenuItem value="">
+              <em>Select Department</em>
+            </MenuItem>
+            {departments.map((dept) => (
+              <MenuItem key={dept.id} value={dept.id}>
+                {dept.name}
+              </MenuItem>
+            ))}
+          </Select>
+          <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+            <Grid item xs={8}>
+              <TextField
+                fullWidth
+                label="New Department"
+                value={newEntry.department}
+                onChange={(e) =>
+                  setNewEntry((p) => ({ ...p, department: e.target.value }))
+                }
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                variant="contained"
+                onClick={() => addNewEntry("department")}
+                startIcon={<AddIcon />}
+              >
+                Add
+              </Button>
+            </Grid>
+          </Grid>
+        </FormControl>
+
+        {/* Diagnosis Section */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Diagnosis</InputLabel>
+          <Select
+            value={selected.diagnosisId}
+            onChange={(e) => handleSelect("diagnosisId", e.target.value)}
+            label="Diagnosis"
+            disabled={!selected.departmentId}
+          >
+            <MenuItem value="">
+              <em>Select Diagnosis</em>
+            </MenuItem>
+            {currentDepartment?.diagnoses?.map((diag) => (
+              <MenuItem key={diag.id} value={diag.id}>
+                {diag.name}
+              </MenuItem>
+            ))}
+          </Select>
+          {selected.departmentId && (
+            <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+              <Grid item xs={8}>
+                <TextField
+                  fullWidth
+                  label="New Diagnosis"
+                  value={newEntry.diagnosis}
+                  onChange={(e) =>
+                    setNewEntry((p) => ({ ...p, diagnosis: e.target.value }))
+                  }
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  onClick={() => addNewEntry("diagnosis")}
+                  startIcon={<AddIcon />}
+                >
+                  Add
+                </Button>
+              </Grid>
+            </Grid>
+          )}
+        </FormControl>
+
+        {/* Chapter Section */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Chapter</InputLabel>
+          <Select
+            value={selected.chapterId}
+            onChange={(e) => handleSelect("chapterId", e.target.value)}
+            label="Chapter"
+            disabled={!selected.diagnosisId}
+          >
+            <MenuItem value="">
+              <em>Select Chapter</em>
+            </MenuItem>
+            {currentDiagnosis?.chapters?.map((chap) => (
+              <MenuItem key={chap.id} value={chap.id}>
+                {chap.name}
+              </MenuItem>
+            ))}
+          </Select>
+          {selected.diagnosisId && (
+            <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+              <Grid item xs={8}>
+                <TextField
+                  fullWidth
+                  label="New Chapter"
+                  value={newEntry.chapter}
+                  onChange={(e) =>
+                    setNewEntry((p) => ({ ...p, chapter: e.target.value }))
+                  }
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  onClick={() => addNewEntry("chapter")}
+                  startIcon={<AddIcon />}
+                >
+                  Add
+                </Button>
+              </Grid>
+            </Grid>
+          )}
+        </FormControl>
+
+        {/* Subchapter Section */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Subchapter</InputLabel>
+          <Select
+            value={selected.subchapterId}
+            onChange={(e) => handleSelect("subchapterId", e.target.value)}
+            label="Subchapter"
+            disabled={!selected.chapterId}
+          >
+            <MenuItem value="">
+              <em>Select Subchapter</em>
+            </MenuItem>
+            {currentChapter?.subchapters?.map((sub) => (
+              <MenuItem key={sub.id} value={sub.id}>
+                {sub.name}
+              </MenuItem>
+            ))}
+          </Select>
+          {selected.chapterId && (
+            <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+              <Grid item xs={8}>
+                <TextField
+                  fullWidth
+                  label="New Subchapter"
+                  value={newEntry.subchapter}
+                  onChange={(e) =>
+                    setNewEntry((p) => ({ ...p, subchapter: e.target.value }))
+                  }
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  onClick={() => addNewEntry("subchapter")}
+                  startIcon={<AddIcon />}
+                >
+                  Add
+                </Button>
+              </Grid>
+            </Grid>
+          )}
+        </FormControl>
+
+        {/* Media Section */}
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <TextField
+            fullWidth
+            label="Video Link"
+            value={videoLink}
+            onChange={(e) => setVideoLink(e.target.value)}
+            placeholder="Enter video URL"
           />
-          <button onClick={() => addNewEntry("department")}>Add</button>
-        </div>
-      </div>
+        </FormControl>
 
-      {/* Diagnosis Section */}
-      <div className="form-group">
-        <label>Diagnosis</label>
-        <select
-          value={selected.diagnosisId}
-          onChange={(e) => handleSelect("diagnosisId", e.target.value)}
-          disabled={!selected.departmentId}
-        >
-          <option value="">Select Diagnosis</option>
-          {currentDepartment?.diagnoses?.map(diag => (
-            <option key={diag.id} value={diag.id}>{diag.name}</option>
-          ))}
-        </select>
-        {selected.departmentId && (
-          <div className="new-entry">
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <Button variant="contained" component="label">
+            Upload Documents
             <input
-              type="text"
-              placeholder="New diagnosis"
-              value={newEntry.diagnosis}
-              onChange={(e) => setNewEntry(p => ({ ...p, diagnosis: e.target.value }))}
+              type="file"
+              hidden
+              multiple
+              onChange={(e) => setDocuments([...e.target.files])}
             />
-            <button onClick={() => addNewEntry("diagnosis")}>Add</button>
-          </div>
-        )}
-      </div>
+          </Button>
+          {documents.length > 0 && (
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              Files: {documents.map((f) => f.name).join(", ")}
+            </Typography>
+          )}
+        </FormControl>
 
-      {/* Chapter Section */}
-      <div className="form-group">
-        <label>Chapter</label>
-        <select
-          value={selected.chapterId}
-          onChange={(e) => handleSelect("chapterId", e.target.value)}
-          disabled={!selected.diagnosisId}
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          size="large"
         >
-          <option value="">Select Chapter</option>
-          {currentDiagnosis?.chapters?.map(chap => (
-            <option key={chap.id} value={chap.id}>{chap.name}</option>
-          ))}
-        </select>
-        {selected.diagnosisId && (
-          <div className="new-entry">
-            <input
-              type="text"
-              placeholder="New chapter"
-              value={newEntry.chapter}
-              onChange={(e) => setNewEntry(p => ({ ...p, chapter: e.target.value }))}
-            />
-            <button onClick={() => addNewEntry("chapter")}>Add</button>
-          </div>
-        )}
-      </div>
-
-      {/* Subchapter Section */}
-      <div className="form-group">
-        <label>Subchapter</label>
-        <select
-          value={selected.subchapterId}
-          onChange={(e) => handleSelect("subchapterId", e.target.value)}
-          disabled={!selected.chapterId}
-        >
-          <option value="">Select Subchapter</option>
-          {currentChapter?.subchapters?.map(sub => (
-            <option key={sub.id} value={sub.id}>{sub.name}</option>
-          ))}
-        </select>
-        {selected.chapterId && (
-          <div className="new-entry">
-            <input
-              type="text"
-              placeholder="New subchapter"
-              value={newEntry.subchapter}
-              onChange={(e) => setNewEntry(p => ({ ...p, subchapter: e.target.value }))}
-            />
-            <button onClick={() => addNewEntry("subchapter")}>Add</button>
-          </div>
-        )}
-      </div>
-
-      {/* Media Section */}
-      <div className="form-group">
-        <label>Video Link</label>
-        <input
-          type="url"
-          value={videoLink}
-          onChange={(e) => setVideoLink(e.target.value)}
-          placeholder="Enter video URL"
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Upload Documents</label>
-        <input
-          type="file"
-          multiple
-          onChange={(e) => setDocuments([...e.target.files])}
-        />
-        {documents.length > 0 && (
-          <div className="file-list">
-            Files: {documents.map(f => f.name).join(', ')}
-          </div>
-        )}
-      </div>
-
-      <button className="submit-btn" onClick={handleSubmit}>
-        Submit
-      </button>
-    </div>
+          Submit
+        </Button>
+      </Box>
+    </Container>
   );
 };
 

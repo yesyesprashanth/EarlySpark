@@ -10,8 +10,8 @@
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  background-color: #333; /* Dark background color */
-  color: white; /* Ensure text is visible on dark background */
+background-color: #fff;
+ 
   overflow-y: auto; /* Handle content overflow */
 }
 
@@ -49,9 +49,7 @@
   font-size: 16px;
 }
 
-.modal-content {
-  text-align: center;
-}
+
 
 .back-btn {
   margin-bottom: 15px;

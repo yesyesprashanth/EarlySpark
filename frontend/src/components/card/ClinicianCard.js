@@ -16,9 +16,8 @@ const columns = [
       <Button
         variant="contained"
         color="primary"
-
       >
-        Edit
+        View
       </Button>
     ),
   },
@@ -30,7 +29,7 @@ const rows = [
   { id: 3, name: "Charlie", department: 'English' },
 ];
 
-const ScreeningCard = () => {
+const ClinicianCard = () => {
   const [search, setSearch] = useState("");
   const [filteredRows, setFilteredRows] = useState(rows); // Store filtered rows
   const navigate = useNavigate(); // Initialize useNavigate hook
@@ -47,7 +46,7 @@ const ScreeningCard = () => {
     <Card sx={{ color: "#000", width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
       <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <Typography variant="h6" align="center" gutterBottom >
-          Screening Card
+          Case List
         </Typography>
 
         <Grid container spacing={1} alignItems="center" sx={{ maxWidth: 500, margin: "auto" }}>
@@ -67,11 +66,7 @@ const ScreeningCard = () => {
               Search
             </Button>
           </Grid>
-          <Grid item xs={3}>
-            <Button variant="contained" color="primary" fullWidth onClick={() => navigate("/screening")}>
-              Create
-            </Button>
-          </Grid>
+
         </Grid>
 
 
@@ -93,4 +88,4 @@ const ScreeningCard = () => {
   );
 };
 
-export default ScreeningCard;
+export default ClinicianCard;

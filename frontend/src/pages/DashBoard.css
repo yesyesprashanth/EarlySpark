@@ -5,13 +5,14 @@
 }
 
 .custom-navigation-buttons {
-  width: 50%; /* Covers half of the screen width */
-  height: 50vh; /* Covers half of the screen height */
+  width: 100%; /* Covers half of the screen width */
+   /* Covers half of the screen height */
   margin-left: 0; /* Starts from the left edge */
   background-color: #f8f9fa; /* Optional background color */
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
 }
 
 .custom-card {
@@ -23,11 +24,27 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
-
 /* Responsive Design */
 @media screen and (max-width: 768px) {
+  .custom-overview {
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center align the cards */
+    height: auto; /* Adjust height based on content */
+    padding: 20px 0; /* Add some spacing */
+  }
+
   .custom-navigation-buttons {
-    width: 100%; /* Full width on mobile */
-    height: 50vh; /* Still covers half height */
+    width: 100%; /* Full width */
+    height: auto; /* Adjust height based on content */
+    flex-direction: column; /* Stack buttons vertically */
+    position: relative; /* Ensure proper layout */
+    gap: 15px; /* Add spacing between cards */
+    padding: 10px; /* Padding for better spacing */
+  }
+
+  .custom-card {
+    width: 90%; /* Slightly smaller width for better layout */
+    height: auto; /* Allow height to adjust dynamically */
+    padding: 15px; /* Adjust padding */
   }
 }

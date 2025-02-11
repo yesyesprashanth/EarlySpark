@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+asyncio
+pyjwt
+loguru
+asyncpg
+alembic
+python-dotenv

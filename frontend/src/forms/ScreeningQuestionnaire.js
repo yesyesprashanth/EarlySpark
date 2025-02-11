@@ -1,5 +1,23 @@
+
 import React, { useState } from "react";
-import "./ScreeningQuestionnaire.css";
+import {
+  Container,
+  Box,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 const ScreeningQuestionnaire = () => {
   // State for form fields
@@ -59,7 +77,7 @@ const ScreeningQuestionnaire = () => {
   ];
 
   const [data, setData] = useState(initialData);
- const [submittedData, setSubmittedData] = useState([]);
+  const [submittedData, setSubmittedData] = useState([]);
   // Get current department
   const currentDepartment = data.find((dept) => dept.id === department);
 
@@ -158,13 +176,13 @@ const ScreeningQuestionnaire = () => {
       const updatedData = data.map((dept) =>
         dept.id === department
           ? {
-              ...dept,
-              screenings: dept.screenings.map((scr) =>
-                scr.id === screening
-                  ? { ...scr, diagnoses: [...scr.diagnoses, newDiag] }
-                  : scr
-              ),
-            }
+            ...dept,
+            screenings: dept.screenings.map((scr) =>
+              scr.id === screening
+                ? { ...scr, diagnoses: [...scr.diagnoses, newDiag] }
+                : scr
+            ),
+          }
           : dept
       );
       setData(updatedData);
@@ -220,23 +238,23 @@ const ScreeningQuestionnaire = () => {
     const updatedData = data.map((dept) =>
       dept.id === department
         ? {
-            ...dept,
-            screenings: dept.screenings.map((scr) =>
-              scr.id === screening
-                ? {
-                    ...scr,
-                    diagnoses: scr.diagnoses.map((diag) => {
-                      const disorder = disorderQuestions.find(
-                        (d) => d.diagnosis === diag.id
-                      );
-                      return disorder
-                        ? { ...diag, questions: [...diag.questions, ...disorder.questions] }
-                        : diag;
-                    }),
-                  }
-                : scr
-            ),
-          }
+          ...dept,
+          screenings: dept.screenings.map((scr) =>
+            scr.id === screening
+              ? {
+                ...scr,
+                diagnoses: scr.diagnoses.map((diag) => {
+                  const disorder = disorderQuestions.find(
+                    (d) => d.diagnosis === diag.id
+                  );
+                  return disorder
+                    ? { ...diag, questions: [...diag.questions, ...disorder.questions] }
+                    : diag;
+                }),
+              }
+              : scr
+          ),
+        }
         : dept
     );
     setData(updatedData);
@@ -252,157 +270,255 @@ const ScreeningQuestionnaire = () => {
   };
 
   return (
-    <div className="screening-questionnaire">
-      <h2>Screening Questionnaire</h2>
+    <Container maxWidth="xs">
+      <Box sx={{ mt: 1, p: 4, boxShadow: 3, borderRadius: 2 }}>
+        <Typography variant="h6" align="center" gutterBottom sx={{ color: "#a5e526" }}>
+          Screening Questionnaire
+        </Typography>
 
-      <form onSubmit={handleSubmit}>
-        {/* Department Section */}
-        <div className="form-group">
-          <label>Department:</label>
-          {isDepartmentNew ? (
-            <div className="new-entry">
-              <input
-                type="text"
+
+
+        <form onSubmit={handleSubmit}>
+          {/* Department Section */}
+          <FormControl fullWidth sx={{ mb: 3 }}>
+            <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>Department</InputLabel>
+            {isDepartmentNew ? (
+              <Grid container spacing={1} alignItems="center">
+                <Grid item xs={8}>
+                  <TextField
+                    fullWidth
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    size="small" // Ensuring the same height as RCI ID field
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Button
+                    variant="contained"
+                    onClick={addNewDepartment}
+                    startIcon={<AddIcon />}
+                    sx={{ padding: "5px 10px", fontSize: "14px", minHeight: "40px" }} // Adjusted to match button height with small TextField
+                  >
+                    Add
+                  </Button>
+                </Grid>
+              </Grid>
+            ) : (
+              <Select
                 value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                placeholder="Enter new department"
-              />
-              <button type="button" onClick={addNewDepartment}>
-                Add
-              </button>
-            </div>
-          ) : (
-            <select value={department} onChange={handleDepartmentChange}>
-              <option value="">Select Department</option>
-              {data.map((dept) => (
-                <option key={dept.id} value={dept.id}>
-                  {dept.name}
-                </option>
-              ))}
-             
-            </select>
-          )}
-        </div>
+                onChange={handleDepartmentChange}
+                label="Department"
+                sx={{
+                  height: "40px", // Matches small TextField height
+                  fontSize: "14px",
+                  "& .MuiSelect-select": { padding: "8px" },
+                }}
+              >
+                <MenuItem value="">
+                  <em>Select Department</em>
+                </MenuItem>
+                {data.map((dept) => (
+                  <MenuItem key={dept.id} value={dept.id}>
+                    {dept.name}
+                  </MenuItem>
+                ))}
+                <MenuItem value="New">New Department</MenuItem>
+              </Select>
+            )}
+          </FormControl>
 
-        {/* Screening Section */}
-        <div className="form-group">
-          <label>Screening Name:</label>
-          {isScreeningNew ? (
-            <div className="new-entry">
-              <input
-                type="text"
+
+          {/* Screening Section */}
+          <FormControl fullWidth sx={{ mb: 3 }}>
+            <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>Screening Name</InputLabel>
+            {isScreeningNew ? (
+              <Box>
+                <Grid container spacing={2} alignItems="center">
+                  <Grid item xs={8}>
+                    <TextField
+                      fullWidth
+                    
+                      value={screening}
+                      size="small"
+                      onChange={(e) => setScreening(e.target.value)}
+                      sx={{ mb: 2 }}
+                    />
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          type="number"
+                          label="Min Age"
+                          size="small"
+                          value={ageRange.min}
+                          onChange={(e) =>
+                            setAgeRange({ ...ageRange, min: e.target.value })
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          type="number"
+                          label="Max Age"
+                            size="small"
+                          value={ageRange.max}
+                          onChange={(e) =>
+                            setAgeRange({ ...ageRange, max: e.target.value })
+                          }
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Button
+                      variant="contained"
+                      onClick={addNewScreening}
+                      startIcon={<AddIcon />}
+                    >
+                      Add
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Box>
+            ) : (
+              <Select
                 value={screening}
-                onChange={(e) => setScreening(e.target.value)}
-                placeholder="Enter new screening"
-              />
-              <div className="age-range">
-                <input
-                  type="number"
-                  value={ageRange.min}
-                  onChange={(e) =>
-                    setAgeRange({ ...ageRange, min: e.target.value })
-                  }
-                  placeholder="Min Age"
-                />
-                <input
-                  type="number"
-                  value={ageRange.max}
-                  onChange={(e) =>
-                    setAgeRange({ ...ageRange, max: e.target.value })
-                  }
-                  placeholder="Max Age"
-                />
-              </div>
-              <button type="button" onClick={addNewScreening}>
-                Add
-              </button>
-            </div>
-          ) : (
-            <select value={screening} onChange={handleScreeningChange}>
-              <option value="">Select Screening</option>
-              {currentDepartment?.screenings?.map((scr) => (
-                <option key={scr.id} value={scr.id}>
-                  {scr.name} ({scr.ageRange})
-                </option>
-              ))}
-              <option value="New">New</option>
-            </select>
-          )}
-        </div>
+                onChange={handleScreeningChange}
+                label="Screening Name"
+                sx={{
+                  height: "40px", // Matches small TextField height
+                  fontSize: "14px",
+                  "& .MuiSelect-select": { padding: "8px" },
+                }}
+              >
+                <MenuItem value="">
+                  <em>Select Screening</em>
+                </MenuItem>
+                {currentDepartment?.screenings?.map((scr) => (
+                  <MenuItem key={scr.id} value={scr.id}>
+                    {scr.name} ({scr.ageRange})
+                  </MenuItem>
+                ))}
+                <MenuItem value="New">New Screening</MenuItem>
+              </Select>
+            )}
+          </FormControl>
 
-        {/* Diagnosis Section */}
-        <div className="form-group">
-          <label>Disorder Name:</label>
-          {isDiagnosisNew ? (
-            <div className="new-entry">
-              <input
-                type="text"
+          {/* Diagnosis Section */}
+          <FormControl fullWidth sx={{ mb: 3 }}>
+            <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>Disorder Name</InputLabel>
+            {isDiagnosisNew ? (
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={8}>
+                  <TextField
+                    fullWidth
+                  
+                    value={diagnosis}
+                      size="small"
+                    onChange={(e) => setDiagnosis(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <Button
+                    variant="contained"
+                    onClick={addNewDiagnosis}
+                    startIcon={<AddIcon />}
+                  >
+                    Add
+                  </Button>
+                </Grid>
+              </Grid>
+            ) : (
+              <Select
                 value={diagnosis}
-                onChange={(e) => setDiagnosis(e.target.value)}
-                placeholder="Enter new diagnosis"
-              />
-              <button type="button" onClick={addNewDiagnosis}>
-                Add
-              </button>
-            </div>
-          ) : (
-            <select value={diagnosis} onChange={handleDiagnosisChange}>
-              <option value="">Select Diagnosis</option>
-              {currentScreening?.diagnoses?.map((diag) => (
-                <option key={diag.id} value={diag.id}>
-                  {diag.name}
-                </option>
-              ))}
-              <option value="New">New</option>
-            </select>
-          )}
-        </div>
+                onChange={handleDiagnosisChange}
+                label="Disorder Name"
+                sx={{
+                  height: "40px", // Matches small TextField height
+                  fontSize: "14px",
+                  "& .MuiSelect-select": { padding: "8px" },
+                }}
+              >
+                <MenuItem value="">
+                  <em>Select Diagnosis</em>
+                </MenuItem>
+                {currentScreening?.diagnoses?.map((diag) => (
+                  <MenuItem key={diag.id} value={diag.id}>
+                    {diag.name}
+                  </MenuItem>
+                ))}
+                <MenuItem value="New">New Diagnosis</MenuItem>
+              </Select>
+            )}
+          </FormControl>
 
-        {/* Question Section */}
-        <div className="form-group">
-          <label>Question:</label>
-          <div className="question-entry">
-            <input
-              type="text"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Enter question"
-            />
-            <button type="button" onClick={addQuestion}>
-              Add Question
-            </button>
-          </div>
-        </div>
+          {/* Question Section */}
+          <Box sx={{ mb: 3 }}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={9}>
+                <TextField
+                  fullWidth
+                  label="Question"
+                    size="small"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={3}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={addQuestion}
+                  startIcon={<AddIcon />}
+                >
+                  Add
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
 
-        {/* Submit Button */}
-        <button type="submit" className="submit-btn">
-          Submit
-        </button>
-      </form>
+          {/* Submit Button */}
+           <Grid item xs={12}>
+                      <Button type="submit" variant="contained" color="primary" fullWidth>
+                        Submit
+                      </Button>
+                    </Grid>
+        </form>
 
-      {/* Display Disorder-wise Questions */}
-      {disorderQuestions.length > 0 && (
-        <div className="disorder-questions">
-          <h3>Questions:</h3>
-          {disorderQuestions.map((disorder, index) => (
-            <div key={index} className="disorder-card">
-              <p>
-                <strong>Disorder Name:</strong>{" "}
-                {currentScreening?.diagnoses?.find((d) => d.id === disorder.diagnosis)?.name}
-              </p>
-              <p>
-                <strong>Questions:</strong>
-                <ul>
-                  {disorder.questions.map((q, idx) => (
-                    <li key={idx}>{q}</li>
-                  ))}
-                </ul>
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+        {/* Display Disorder-wise Questions */}
+        {disorderQuestions.length > 0 && (
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h6" gutterBottom>
+              Added Questions
+            </Typography>
+            {disorderQuestions.map((disorder, index) => (
+              <Card key={index} sx={{ mb: 2 }}>
+                <CardContent>
+                  <Typography variant="subtitle1" gutterBottom>
+                    <strong>
+                      {
+                        currentScreening?.diagnoses?.find(
+                          (d) => d.id === disorder.diagnosis
+                        )?.name
+                      }
+                    </strong>
+                  </Typography>
+                  <List dense>
+                    {disorder.questions.map((q, idx) => (
+                      <ListItem key={idx}>
+                        <ListItemText primary={`${idx + 1}. ${q}`} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        )}
+      </Box>
+    </Container>
   );
 };
 

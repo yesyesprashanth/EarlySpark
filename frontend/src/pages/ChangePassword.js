@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './ChangePassword.css';
+import { Container, TextField, Button, Typography, Box } from '@mui/material';
+
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -21,49 +22,61 @@ const ChangePassword = () => {
 
     return (
         <div className="change-password-page">
-            <div className='school'>
-                <h1>EarlySpark</h1>
-            </div>
-            <div className="change-password-form">
-                <h2>Change Password</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="current-password">Current Password</label>
-                        <input
+            <Container maxWidth="xs">
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: 3, padding: 3, borderRadius: 2 }}>
+
+                    <Typography variant="h6" align="center" gutterBottom sx={{ color: "#a5e526" }}>
+                        Change Password
+                    </Typography>
+                    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                        <TextField
+                            label="Current Password"
                             type="password"
-                            id="current-password"
+                            fullWidth
+                            variant="outlined"
                             value={currentPassword}
                             onChange={(e) => setCurrentPassword(e.target.value)}
-                            placeholder="Enter your current password"
-                            required
+                            margin="normal"
+                            size="small"
                         />
-                    </div>
-                    <div className="form-group">
-                        <label className="new-password">New Password</label>
-                        <input
+                        <TextField
+                            label="New Password"
                             type="password"
-                            id="new-password"
+                            fullWidth
+                            variant="outlined"
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            placeholder="Enter your new password"
+                            margin="normal"
                             required
+                            size="small"
                         />
-                    </div>
-                    <div className="form-group">
-                        <label className="confirm-password">Confirm New Password</label>
-                        <input
+                        <TextField
+                            label="Confirm New Password"
                             type="password"
-                            id="confirm-password"
+                            fullWidth
+                            variant="outlined"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Confirm your new password"
+                            margin="normal"
                             required
+                            size="small"
+
                         />
-                    </div>
-                    <button type="submit" className="submit-btn">Update Password</button>
-                </form>
-                {message && <p className="message">{message}</p>}
-            </div>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 2 }}
+                        >
+                            Update Password
+                        </Button>
+                    </form>
+                    {message && <Typography variant="body2" color={message.includes("match") ? "success.main" : "error.main"} sx={{ mt: 2 }}>
+                        {message}
+                    </Typography>}
+                </Box>
+            </Container>
         </div>
     );
 };

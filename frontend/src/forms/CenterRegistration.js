@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { TextField, MenuItem, Select, InputLabel, FormControl, Button, Grid } from '@mui/material';
+import { TextField, MenuItem, Select, FormHelperText, InputLabel, FormControl, Button, Grid, Container } from '@mui/material';
 
-const SchoolRegistration = ({ closeModal }) => {
+const InstituteRegistration = ({ closeModal }) => {
   const [formData, setFormData] = useState({
-    type: '',
-    schoolId: '',
+
+    rciId: '',
     name: '',
     contactPerson: '',
     phone: '',
@@ -12,11 +12,12 @@ const SchoolRegistration = ({ closeModal }) => {
     address: '',
     city: '',
     state: '',
+    nodalCentre: '',
   });
 
   const [errors, setErrors] = useState({
-    type: false,
-    schoolId: false,
+
+    rciId: false,
     name: false,
     contactPerson: false,
     phone: false,
@@ -24,11 +25,11 @@ const SchoolRegistration = ({ closeModal }) => {
     address: false,
     city: false,
     state: false,
+    nodalCentre: false,
   });
 
-  const state = ['State 1', 'State 2', 'State 3', 'State 4'];
-  const city = ['City 1', 'City 2', 'City 3', 'City 4']; // Replace with actual cities
-  
+  const nodalCentres = ['Centre 1', 'Centre 2', 'Centre 3', 'Centre 4'];
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
@@ -48,8 +49,8 @@ const SchoolRegistration = ({ closeModal }) => {
     e.preventDefault();
 
     const newErrors = {
-      type: formData.type.trim() === '',
-      schoolId: formData.schoolId.trim() === '',
+     
+      rciId: formData.rciId.trim() === '',
       name: formData.name.trim() === '' || !/^[A-Za-z\s]+$/.test(formData.name),
       contactPerson: formData.contactPerson.trim() === '' || !/^[A-Za-z\s]+$/.test(formData.contactPerson),
       phone: formData.phone.trim() === '' || !/^\d{10}$/.test(formData.phone),
@@ -57,6 +58,7 @@ const SchoolRegistration = ({ closeModal }) => {
       address: formData.address.trim() === '',
       city: formData.city.trim() === '',
       state: formData.state.trim() === '',
+      nodalCentre: formData.nodalCentre.trim() === '',
     };
 
     setErrors(newErrors);
@@ -71,45 +73,30 @@ const SchoolRegistration = ({ closeModal }) => {
   };
 
   return (
+    <Container maxWidth="xs">
     <div className="modal-backdrop">
       <div className="modal-content">
-        <h2 className="form-header">School Registration</h2>
+        <h2 className="form-header">Center inaRegistration</h2>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Type (School)"
-                name="type"
-                value={formData.type}
+                label="Register Id"
+                name="rciId"
+                value={formData.rciId}
                 onChange={handleInputChange}
                 variant="outlined"
                 fullWidth
                 size="small"
-                error={errors.type}
-                helperText={errors.type ? "This field is required" : ""}
-                InputLabelProps={{ style: { color: 'white' } }} // Label color set to white
-                inputProps={{ style: { color: 'white' } }} // Input text color set to white
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="School ID"
-                name="schoolId"
-                value={formData.schoolId}
-                onChange={handleInputChange}
-                variant="outlined"
-                fullWidth
-                size="small"
-                error={errors.schoolId}
-                helperText={errors.schoolId ? "This field is required" : ""}
-                InputLabelProps={{ style: { color: 'white' } }} // Label color set to white
-                inputProps={{ style: { color: 'white' } }} // Input text color set to white
+                error={errors.rciId}
+                helperText={errors.rciId ? "This field is required" : ""}
+             
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
-                label="School Name"
+                label=" Name"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
@@ -118,13 +105,12 @@ const SchoolRegistration = ({ closeModal }) => {
                 size="small"
                 error={errors.name}
                 helperText={errors.name ? "Please enter a valid name" : ""}
-                InputLabelProps={{ style: { color: 'white' } }} // Label color set to white
-                inputProps={{ style: { color: 'white' } }} // Input text color set to white
+              
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Contact Person Name"
+                label="Contact Name"
                 name="contactPerson"
                 value={formData.contactPerson}
                 onChange={handleInputChange}
@@ -133,8 +119,7 @@ const SchoolRegistration = ({ closeModal }) => {
                 size="small"
                 error={errors.contactPerson}
                 helperText={errors.contactPerson ? "Please enter a valid contact person name" : ""}
-                InputLabelProps={{ style: { color: 'white' } }} // Label color set to white
-                inputProps={{ style: { color: 'white' } }} // Input text color set to white
+              
               />
             </Grid>
 
@@ -149,8 +134,7 @@ const SchoolRegistration = ({ closeModal }) => {
                 size="small"
                 error={errors.phone}
                 helperText={errors.phone ? "Please enter a valid 10-digit phone number" : ""}
-                InputLabelProps={{ style: { color: 'white' } }} // Label color set to white
-                inputProps={{ style: { color: 'white' } }} // Input text color set to white
+             
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -164,8 +148,7 @@ const SchoolRegistration = ({ closeModal }) => {
                 size="small"
                 error={errors.email}
                 helperText={errors.email ? "Please enter a valid email address" : ""}
-                InputLabelProps={{ style: { color: 'white' } }} // Label color set to white
-                inputProps={{ style: { color: 'white' } }} // Input text color set to white
+             
               />
             </Grid>
 
@@ -181,66 +164,59 @@ const SchoolRegistration = ({ closeModal }) => {
                 size="small"
                 error={errors.address}
                 helperText={errors.address ? "This field is required" : ""}
-                inputProps={{
-                  style: { color: 'white', whiteSpace: 'nowrap' } // Text color set to white and no wrapping
-                }}
-                InputLabelProps={{ style: { color: 'white' } }} // Label color set to white
+              
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth size="small" error={errors.city}>
-                <InputLabel style={{ color: 'white' }}>City</InputLabel> {/* Label color set to white */}
-                <Select
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        backgroundColor: '#1e1e1e', // Dark background
-                        color: 'white', // Text color white
-                      },
-                    },
-                  }}
-                  style={{ color: 'white' }} // Text color in select options
-                >
-                  <MenuItem value="">--Select city--</MenuItem>
-                  {city.map((board, index) => (
-                    <MenuItem key={index} value={board}>
-                      {board}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.city && <span className="error-message"></span>}
-              </FormControl>
+              <TextField
+                label="City"
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                variant="outlined"
+                fullWidth
+                size="small"
+                error={errors.city}
+                helperText={errors.city ? "This field is required" : ""}
+            
+              />
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth size="small" error={errors.state}>
-                <InputLabel style={{ color: 'white' }}>State</InputLabel> {/* Label color set to white */}
+              <TextField
+                label="State"
+                name="state"
+                value={formData.state}
+                onChange={handleInputChange}
+                variant="outlined"
+                fullWidth
+                size="small"
+                error={errors.state}
+                helperText={errors.state ? "This field is required" : ""}
+              
+              />
+            </Grid>
+
+            {/* Nodal Centre dropdown with white label */}
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth size="small" error={errors.nodalCentre}>
+                <InputLabel >Nodal Centre</InputLabel>
                 <Select
-                  name="state"
-                  value={formData.state}
+             label="nodalCentre"
+                  name="nodalCentre"
+                  value={formData.nodalCentre}
                   onChange={handleInputChange}
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        backgroundColor: '#1e1e1e', // Dark background
-                        color: 'white', // Text color white
-                      },
-                    },
-                  }}
-                  style={{ color: 'white' }} // Text color in select options
+              
                 >
-                  <MenuItem value="">--Select state--</MenuItem>
-                  {state.map((board, index) => (
-                    <MenuItem key={index} value={board}>
-                      {board}
+                  <MenuItem value="">--Select Nodal Centre--</MenuItem>
+                  {nodalCentres.map((centre, index) => (
+                    <MenuItem key={index} value={centre}>
+                      {centre}
                     </MenuItem>
                   ))}
                 </Select>
-                {errors.state && <span className="error-message"></span>}
+                {errors.nodalCentre && <span className="error-message"></span>}
               </FormControl>
             </Grid>
 
@@ -253,7 +229,8 @@ const SchoolRegistration = ({ closeModal }) => {
         </form>
       </div>
     </div>
+    </Container>
   );
 };
 
-export default SchoolRegistration;
+export default InstituteRegistration;

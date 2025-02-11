@@ -1,78 +1,67 @@
-
-
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Grid, Container } from '@mui/material';
+import {
+  TextField,
+  Container,
+  Button,
+  Grid,
+  Typography,
+  Box
+} from '@mui/material';
 
-const ClinicianRegistration = () => {
+const ExaminerRegistration = () => {
   const [formData, setFormData] = useState({
-    rciId: '',
     name: '',
     phone: '',
     email: '',
-    centerId:'',
+    nodeId:'',
   });
 
   const [errors, setErrors] = useState({
-    rciId: false,
     name: false,
     phone: false,
     email: false,
-    centerId:false,
+    nodeId:false,
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Validation for specific fields
-    if (name === 'name' && !/^[A-Za-z\s]*$/.test(value)) return;
+    // Allow only valid input for phone and name fields
     if (name === 'phone' && !/^\d*$/.test(value)) return;
+    if (name === 'name' && !/^[A-Za-z\s]*$/.test(value)) return;
 
     setFormData({ ...formData, [name]: value });
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: false }));
+    setErrors({ ...errors, [name]: false });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check for empty fields
+    // Validate fields
     const newErrors = {
-      rciId: formData.rciId.trim() === '',
       name: formData.name.trim() === '' || !/^[A-Za-z\s]+$/.test(formData.name),
       phone: formData.phone.trim() === '' || !/^\d{10}$/.test(formData.phone),
-      email: formData.email.trim() === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
-      centerId: formData.centerId.trim() === '',
+      email: formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
+      nodeId: formData.nodeId.trim() === '' || !/^\d$/.test(formData.phone),
     };
 
     setErrors(newErrors);
 
     if (!Object.values(newErrors).some((error) => error)) {
       console.log('Submitted Data:', formData);
-      alert('Clinician Registration successful!');
+      alert('Teacher Registration successful!');
     }
   };
 
   return (
     <Container maxWidth="xs">
-       <Box sx={{ mt: 1, p: 4, boxShadow: 3, borderRadius: 2 }}>
-   
+      <Box sx={{ mt: 1, p: 4, boxShadow: 3, borderRadius: 2 }}>
+
         <Typography variant="h6" align="center" gutterBottom sx={{ color: "#a5e526" }}>
-          Clinician Registration
+          Examiner Registration
         </Typography>
         <form onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="RCI ID"
-                name="rciId"
-                value={formData.rciId}
-                onChange={handleInputChange}
-                error={errors.rciId}
-                helperText={errors.rciId ? 'RCI ID is required.' : ''}
-                fullWidth
-                variant="outlined"
-                size="small"
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Name"
@@ -80,7 +69,7 @@ const ClinicianRegistration = () => {
                 value={formData.name}
                 onChange={handleInputChange}
                 error={errors.name}
-                helperText={errors.name ? 'Name must contain only alphabets.' : ''}
+                helperText={errors.name ? 'Name is required and must contain only alphabets.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
@@ -93,7 +82,7 @@ const ClinicianRegistration = () => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 error={errors.phone}
-                helperText={errors.phone ? 'Must be 10 digits.' : ''}
+                helperText={errors.phone ? 'Phone number must be 10 digits.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
@@ -101,12 +90,12 @@ const ClinicianRegistration = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Email ID"
+                label="Email (Optional)"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 error={errors.email}
-                helperText={errors.email ? 'A valid email is required.' : ''}
+                helperText={errors.email ? 'Enter a valid email address.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
@@ -114,29 +103,32 @@ const ClinicianRegistration = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Center Id"
-                name="centerId"
-                value={formData.rciId}
+                label="Node Id"
+                name="nodeId"
+                value={formData.nodeId}
                 onChange={handleInputChange}
-                error={errors.rciId}
-                helperText={errors.rciId ? 'RCI ID is required.' : ''}
+                error={errors.nodeId}
+                helperText={errors.nodeId ? 'nodeId is required and must contain only alphabets.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
               />
             </Grid>
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" color="primary" fullWidth>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+              >
                 Submit
               </Button>
             </Grid>
           </Grid>
         </form>
-   
       </Box>
     </Container>
   );
 };
 
-export default ClinicianRegistration;
-
+export default ExaminerRegistration;

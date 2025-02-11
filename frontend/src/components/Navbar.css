@@ -111,7 +111,6 @@
   background-color: black;
   transition: transform 0.3s ease;
 }
-
 /* Responsive Navbar */
 @media screen and (max-width: 768px) {
   /* Show hamburger icon on small screens */
@@ -126,14 +125,16 @@
     display: none;
     flex-direction: column;
     background-color: #417bb2;
-    position: absolute;
-    top: 50px;
+    position: fixed;  /* Make the nav links fixed */
+    top: 50px;        /* Adjust the position from the top */
     right: 10px;
     width: 200px;
     border-radius: 5px;
     padding: 10px 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    max-height: calc(100vh - 50px); /* Ensure the nav does not overflow the viewport height */
+    overflow-y: auto; /* Allow scrolling if the content exceeds the screen height */
   }
 
   .nav-links.active {

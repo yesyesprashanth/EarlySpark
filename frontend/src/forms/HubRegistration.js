@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {
+  Container,
+  Box,
   TextField,
   MenuItem,
   FormControl,
@@ -10,9 +12,10 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Typography,
 } from '@mui/material';
 
-const NodalCenterFormModal = () => {
+const HubRegistration = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -76,7 +79,7 @@ const NodalCenterFormModal = () => {
     }
   };
 
-  const handleOpen = () => setOpen(true);
+
 
   const handleClose = () => {
     setOpen(false);
@@ -101,15 +104,17 @@ const NodalCenterFormModal = () => {
   };
 
   return (
-    <div>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
-        Open Nodal Center Form
-      </Button>
+    <Container maxWidth="sm" >
 
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>Nodal Center Registration</DialogTitle>
+      <Box sx={{ mt: 1, p: 4, boxShadow: 3, borderRadius: 2 }}>
+
+        <Typography variant="h6" align="center" gutterBottom sx={{ color: "##a5e526" }}>
+          Nodal Center Registration
+        </Typography>
+
+
         <DialogContent>
-          <form onSubmit={handleSubmit}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ p: 2 }}>
             <TextField
               label="Full Name"
               name="name"
@@ -120,6 +125,8 @@ const NodalCenterFormModal = () => {
               fullWidth
               margin="normal"
               required
+              variant="outlined"
+              size="small"
             />
 
             <TextField
@@ -132,6 +139,8 @@ const NodalCenterFormModal = () => {
               fullWidth
               margin="normal"
               required
+              variant="outlined"
+              size="small"
             />
 
             <TextField
@@ -145,6 +154,8 @@ const NodalCenterFormModal = () => {
               fullWidth
               margin="normal"
               required
+              variant="outlined"
+              size="small"
             />
 
             <TextField
@@ -158,6 +169,8 @@ const NodalCenterFormModal = () => {
               fullWidth
               margin="normal"
               required
+              variant="outlined"
+              size="small"
             />
 
             <TextField
@@ -172,44 +185,74 @@ const NodalCenterFormModal = () => {
               multiline
               rows={4}
               required
+              variant="outlined"
+              size="small"
             />
 
-            <FormControl fullWidth margin="normal" error={errors.state}>
-              <InputLabel>State</InputLabel>
-              <Select
-                name="state"
-                value={formData.state}
-                onChange={handleInputChange}
-                label="State"
-                required
-              >
-                <MenuItem value="">--Select State--</MenuItem>
-                {Object.keys(statesWithCities).map((state) => (
-                  <MenuItem key={state} value={state}>
-                    {state}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+<FormControl fullWidth sx={{ mb: 2 }}> {/* Adds margin-bottom for spacing */}
+  <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>
+    State
+  </InputLabel>
+  <Select
+    name="state"
+    value={formData.state}
+    onChange={handleInputChange}
+    label="State"
+    size="small"
+    variant="outlined"
+    MenuProps={{
+      PaperProps: {
+        style: { color: 'black' },
+      },
+    }}
+    sx={{
+      height: "40px",
+      color: 'black',
+    }}
+    required
+  >
+    <MenuItem value="">
+      <em>--Select State--</em>
+    </MenuItem>
+    {Object.keys(statesWithCities).map((state) => (
+      <MenuItem key={state} value={state}>
+        {state}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
 
-            <FormControl fullWidth margin="normal" error={errors.city}>
-              <InputLabel>City</InputLabel>
-              <Select
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                label="City"
-                required
-              >
-                <MenuItem value="">--Select City--</MenuItem>
-                {statesWithCities[formData.state]?.map((city) => (
-                  <MenuItem key={city} value={city}>
-                    {city}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </form>
+<FormControl fullWidth sx={{ mb: 2 }}> {/* Adds same spacing as first FormControl */}
+  <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>
+    City
+  </InputLabel>
+  <Select
+    name="city"
+    value={formData.city}
+    onChange={handleInputChange}
+    size="small"
+    variant="outlined"
+    MenuProps={{
+      PaperProps: {
+        style: { color: 'black' },
+      },
+    }}
+    sx={{
+      height: "40px",
+      color: 'black',
+    }}
+    required
+  >
+    <MenuItem value="">--Select City--</MenuItem>
+    {statesWithCities[formData.state]?.map((city) => (
+      <MenuItem key={city} value={city}>
+        {city}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary">
@@ -219,9 +262,10 @@ const NodalCenterFormModal = () => {
             Submit
           </Button>
         </DialogActions>
-      </Dialog>
-    </div>
+
+      </Box>
+    </Container>
   );
 };
 
-export default NodalCenterFormModal;
+export default HubRegistration;

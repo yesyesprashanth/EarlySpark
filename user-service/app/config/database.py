@@ -52,6 +52,7 @@ async def get_db():
 async def create_tables():
     try:
         async with engine.begin() as conn:
+            from app.models import hub, center
             await conn.run_sync(Base.metadata.create_all)
         logger.info("Database tables created successfully.")
     except Exception as e:

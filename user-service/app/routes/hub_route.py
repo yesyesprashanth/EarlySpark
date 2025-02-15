@@ -7,7 +7,7 @@ from app.controllers.hub_controller import HubController
 router = APIRouter()
 
 
-def get_hub_controller(db:AsyncSession=Depends(get_db)):
+def get_hub_controller(db:AsyncSession=Depends(get_db))-> HubController:
     if not db:
         raise Exception("Database connection not established")
     if not isinstance(db, AsyncSession):
@@ -27,7 +27,7 @@ def get_hello_world():
     return  response
 
 @router.post('/', response_model=StandardResponse)
-async def post_hello_world(hub_data:HubCreateRequest, HubController = Depends(get_hub_controller)):
+async def create_hub(hub_data:HubCreateRequest, HubController = Depends(get_hub_controller)):
     return await HubController.create_hub_controller(hub_data)
     
     

@@ -17,7 +17,7 @@ export default function LoginCard() {
   const navigate = useNavigate();
 
   const roleMapping = {
-    'varun@gmail.com': 'Institute',
+    'institute@gmail.com': 'Institute',
     'prashanth@gmail.com': 'School',
     'teacher@gmail.com': 'Teacher',
     'clinician@gmail.com': 'Clinician',

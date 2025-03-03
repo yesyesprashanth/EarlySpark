@@ -6,9 +6,10 @@ class Center(Base):
     __tablename__ = "centers"
 
     id = Column(Integer, primary_key=True, index=True)    
+
+    center_id = Column(String, nullable=False, unique=True)
     center_name = Column(String, nullable=False)
-    contact_name = Column(String, nullable=False)
-    registration_id = Column(String, nullable=False, unique=True)
+    contact_name = Column(String, nullable=False)    
     phone = Column(String, nullable=False)
     email_id = Column(String, nullable=False, unique=True)
     address = Column(String, nullable=False)

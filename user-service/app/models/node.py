@@ -6,24 +6,19 @@ class Node(Base):
     __tablename__ = "node"
     id = Column(Integer, primary_key=True, index=True)
         
+    node_id = Column(String, nullable=False, unique=True)
     node_name = Column(String, nullable=False)
     contact_person = Column(String, nullable=False)
-
     phone = Column(String, nullable=False)
     email_id = Column(String, nullable=False, unique=True)
-
     address = Column(String, nullable=False)
-
     city = Column(String, nullable=False)
-
     state = Column(String, nullable=False)
-
     country = Column(String, nullable=False)
-
     subscription = Column(String, nullable=False)
 
     created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())    
 
 
 class Node_Center(Base):

@@ -1,9 +1,9 @@
 from pydantic import BaseModel, EmailStr
 
-class Center(BaseModel):    
+class CenterCreateRequest(BaseModel):    
+    center_id:str
     center_name:str
-    contact_name:str
-    registration_id:str
+    contact_name:str    
     phone:str
     email_id:EmailStr
     address:str

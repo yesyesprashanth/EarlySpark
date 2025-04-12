@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-
+from typing import Optional
 
 class NodeCreaterequest(BaseModel):    
     node_id: str
@@ -10,5 +10,11 @@ class NodeCreaterequest(BaseModel):
     address: str
     city: str
     state: str
-    country:str
-    subscription:str
+    country: str
+    subscription: str
+    hub_id: str
+    center_id: Optional[str] = None  # Optional center ID
+
+class NodeCenterConnectRequest(BaseModel):
+    node_id: str
+    center_id: str

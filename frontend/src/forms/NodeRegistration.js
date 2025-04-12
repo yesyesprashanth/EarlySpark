@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextField, Container, MenuItem, Select, InputLabel, FormControl, Button, Grid } from '@mui/material';
+import { registerNode, getHubList, getCentersByHub } from '../api/userapi';
 
 const NodeRegistration = ({ closeModal }) => {
   const [formData, setFormData] = useState({
-    type: '',
-    schoolId: '',
+    nodeId: '',
     name: '',
     contactPerson: '',
     phone: '',
@@ -12,11 +12,15 @@ const NodeRegistration = ({ closeModal }) => {
     address: '',
     city: '',
     state: '',
+    hubId: '',
+    centerId: ''
   });
 
+  const [hubList, setHubList] = useState([]);
+  const [centerList, setCenterList] = useState([]);
+
   const [errors, setErrors] = useState({
-    type: false,
-    schoolId: false,
+    nodeId: false,
     name: false,
     contactPerson: false,
     phone: false,
@@ -24,10 +28,31 @@ const NodeRegistration = ({ closeModal }) => {
     address: false,
     city: false,
     state: false,
+    hubId: false
   });
 
-  const state = ['State 1', 'State 2', 'State 3', 'State 4'];
-  const city = ['City 1', 'City 2', 'City 3', 'City 4']; // Replace with actual cities
+  useEffect(() => {
+    const fetchHubs = async () => {
+      const hubs = await getHubList();
+      if (hubs) {
+        setHubList(hubs);
+      }
+    };
+    fetchHubs();
+  }, []);
+
+  const handleHubChange = async (e) => {
+    const { value } = e.target;
+    setFormData(prev => ({ ...prev, hubId: value, centerId: '' }));
+    if (value) {
+      const centers = await getCentersByHub(value);
+      if (centers) {
+        setCenterList(centers);
+      }
+    } else {
+      setCenterList([]);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,12 +69,11 @@ const NodeRegistration = ({ closeModal }) => {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: false }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {
-      type: formData.type.trim() === '',
-      schoolId: formData.schoolId.trim() === '',
+      nodeId: formData.nodeId.trim() === '',
       name: formData.name.trim() === '' || !/^[A-Za-z\s]+$/.test(formData.name),
       contactPerson: formData.contactPerson.trim() === '' || !/^[A-Za-z\s]+$/.test(formData.contactPerson),
       phone: formData.phone.trim() === '' || !/^\d{10}$/.test(formData.phone),
@@ -57,6 +81,7 @@ const NodeRegistration = ({ closeModal }) => {
       address: formData.address.trim() === '',
       city: formData.city.trim() === '',
       state: formData.state.trim() === '',
+      hubId: formData.hubId.trim() === ''
     };
 
     setErrors(newErrors);
@@ -64,9 +89,32 @@ const NodeRegistration = ({ closeModal }) => {
     const hasErrors = Object.values(newErrors).some((error) => error);
 
     if (!hasErrors) {
-      console.log('Submitted Data:', formData);
-      alert('Registration successful!');
-      closeModal();
+      const nodeData = {
+        nodeId: formData.nodeId,
+        node_name: formData.name,
+        contactPerson: formData.contactPerson,
+        phone: formData.phone,
+        emailId: formData.email,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        country: "India",
+        subscription: "Free",
+        hubId: formData.hubId,
+        centerId: formData.centerId || null // Optional center ID
+      };
+
+      try {
+        const response = await registerNode(nodeData)
+        if (response.status === "success") {
+          alert('Registration successful!');
+          closeModal();
+        } else {
+          alert('Registration failed!');
+        }
+      } catch (error) {
+        alert('Registration failed!');
+      }
     }
   };
 
@@ -74,27 +122,27 @@ const NodeRegistration = ({ closeModal }) => {
     <Container maxWidth="xs">
       <div className="modal-backdrop">
         <div className="modal-content">
-          <h2 className="form-header">Node Registration</h2>
+          <h2 className="form-header">Node Registration (Schools, Camps)</h2>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-            
+
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="School ID"
-                  name="schoolId"
-                  value={formData.schoolId}
+                  label="Node ID"
+                  name="nodeId"
+                  value={formData.nodeId}
                   onChange={handleInputChange}
                   variant="outlined"
                   fullWidth
                   size="small"
-                  error={errors.schoolId}
-                  helperText={errors.schoolId ? "This field is required" : ""}
+                  error={errors.nodeId}
+                  helperText={errors.nodeId ? "This field is required" : ""}
 
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="School Name"
+                  label="Node Name"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
@@ -163,70 +211,74 @@ const NodeRegistration = ({ closeModal }) => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={errors.city}>
-                  <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>City</InputLabel>
-                  <Select
-                    name="city"
-                    label="City"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    MenuProps={{
-                      PaperProps: {
-                        style: { color: "black" },
-                      },
-                    }}
-                    sx={{
-                      height: "40px",
-                      color: "black",
-                      textAlign:"left"
-                    }}
-                    required
-                    variant="outlined"
-                    fullWidth
-                  >
-                    <MenuItem value="" ><em>--Select city--</em></MenuItem>
-                    {city.map((board, index) => (
-                      <MenuItem key={index} value={board} sx={{ textAlign: "left" }}>
-                        {board}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.city && <span className="error-message"></span>}
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small" error={errors.state}>
-                  <InputLabel>State</InputLabel>
-                  <Select
-                    name="state"
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    label="State"
-                    MenuProps={{
-                      PaperProps: {
-                        style: { color: "black" },
-                      },
-                    }}
-                    sx={{
-                      height: "40px",
-                      color: "black",
-                       textAlign:"left"
-                    }}  
-                    required
-                    variant="outlined"
-                    fullWidth
-                  > 
-                    <MenuItem value=""><em>--Select state--</em></MenuItem>
-                    {state.map((board, index) => (
-                      <MenuItem key={index} value={board}>
-                        {board}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.state && <span className="error-message"></span>}
-                </FormControl>
+                <TextField
+                  label="City"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  error={errors.city}
+                  helperText={errors.city ? "This field is required" : ""}
 
+                />
               </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="State"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  error={errors.state}
+                  helperText={errors.state ? "This field is required" : ""}
+
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth size="small" error={errors.hubId}>
+                  <InputLabel>Hub</InputLabel>
+                  <Select
+                    label="Hub"
+                    name="hubId"
+                    value={formData.hubId}
+                    onChange={handleHubChange}
+                  >
+                    <MenuItem value="">--Select Hub--</MenuItem>
+                    {hubList.map((hub) => (
+                      <MenuItem key={hub.id} value={hub.id}>
+                        {hub.hub_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Center (Optional)</InputLabel>
+                  <Select
+                    label="Center (Optional)"
+                    name="centerId"
+                    value={formData.centerId}
+                    onChange={handleInputChange}
+                    disabled={!formData.hubId}
+                  >
+                    <MenuItem value="">--Select Center--</MenuItem>
+                    {centerList.map((center) => (
+                      <MenuItem key={center.id} value={center.id}>
+                        {center.center_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
               <Grid item xs={12}>
                 <Button type="submit" variant="contained" color="primary" fullWidth size="small">
                   Submit

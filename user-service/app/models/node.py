@@ -1,5 +1,5 @@
 from app.config.database import Base
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, ForeignKey
 from sqlalchemy.sql import func
 
 class Node(Base):
@@ -15,7 +15,8 @@ class Node(Base):
     city = Column(String, nullable=False)
     state = Column(String, nullable=False)
     country = Column(String, nullable=False)
-    subscription = Column(String, nullable=False)
+    subscription = Column(String, nullable=False, default="Free")
+    hub_id = Column(String, ForeignKey("hub.id"), nullable=False)
 
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())    
@@ -25,10 +26,20 @@ class Node_Center(Base):
     __tablename__ = "node_center"
     id = Column(Integer, primary_key=True, index=True)
 
-    node_id = Column(Integer, ForeignKey("node.id"))
-    center_id = Column(Integer, ForeignKey("centers.id"))
+    node_id = Column(String, ForeignKey("node.node_id"))
+    center_id = Column(String, ForeignKey("centers.center_id"))
+    is_active = Column(Boolean, nullable=False, default=True)
 
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
-   
+class Node_Screening(Base):
+    __tablename__ = "node_screening"
+    id = Column(Integer, primary_key=True, index=True)
+
+    node_id = Column(String, ForeignKey("node.node_id"))
+    screening_id = Column(Integer, ForeignKey("screening.id"))
+
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+

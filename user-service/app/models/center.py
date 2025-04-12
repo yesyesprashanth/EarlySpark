@@ -1,5 +1,5 @@
 from app.config.database import Base
-from sqlalchemy import Column, String, Integer, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, String, Integer, Boolean, TIMESTAMP, ForeignKey
 from sqlalchemy.sql import func
 
 class Center(Base):

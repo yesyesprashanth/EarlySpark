@@ -17,12 +17,13 @@ import Footer from './components/Footer'; // Import Footer
 import MaterialPage from './pages/MaterialPage';
 
 import ScreeningTestData from './forms/ScreeningTestData';
-import InstituteCard from './components/card/CenterCard';
+
 import ExaminerRegistration from './forms/ExaminerRegistration';
 import HubRegistration from './forms/HubRegistration';
 import CenterRegistration from './forms/CenterRegistration';
 import NodeRegistration from './forms/NodeRegistration';
 import ClientRegistration from './forms/ClientRegistration';
+import Evaluation from './forms/Evaluation';
 
 const Layout = ({ children }) => {
   const location = useLocation(); // Get current location
@@ -47,17 +48,18 @@ const App = () => {
           <Route path="/change-password" element={<Layout><ChangePassword /></Layout>} />
           <Route path="/hub" element={<Layout><HubRegistration/></Layout>} />
           <Route path="/center" element={<CenterRegistration/>} />
-          <Route path="/clinic" element={<Layout><ClinicianRegistration /></Layout>} />
+          <Route path="/clinician" element={<Layout><ClinicianRegistration /></Layout>} />
           <Route path="/school" element={<Layout><NodeRegistration/></Layout>} />
-          <Route path="/examiner" element={<Layout><ExaminerRegistration/></Layout>} />
-          <Route path="/student" element={<Layout><ClientRegistration/></Layout>} />
+          <Route path="/facilitator" element={<Layout><ExaminerRegistration/></Layout>} />
+          <Route path="/client" element={<Layout><ClientRegistration/></Layout>} />
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
           <Route path="/library" element={<Layout><Library /></Layout>} />
           <Route path="/libraryvideo" element={<Layout><LibraryVideo /></Layout>} />
           <Route path="/screening" element={<Layout><ScreeningQuestionnaire /></Layout>} />
           <Route path="/material" element={ <Layout><MaterialPage/></Layout>} />
-          <Route path="/screeningtest" element={<Layout><ScreeningTestData/></Layout>}/>
-          <Route path="/institute-card" element={<Layout><InstituteCard/></Layout>}/>
+          <Route path="/ScreeningTestData" element={<Layout><ScreeningTestData/></Layout>}/>
+          <Route path="/diagnosis" element={<Layout><Evaluation/></Layout>}/>
+       
         </Routes>
       </Router>
     </DataContextProvider>

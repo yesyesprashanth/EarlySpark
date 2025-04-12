@@ -1,179 +1,117 @@
-
-
-/* General Styles for the Login Page */
+/* LoginForm.css */
 .login-page {
-  display: flex;
-  flex-direction: column; /* Default to stacking items for mobile */
-  justify-content: center; /* Center items vertically */
-  align-items: center; /* Center items horizontally */
-  height: 100vh; /* Full height of the viewport */
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-              url('../assest/screening3.jpeg'); /* Corrected relative path */
-  background-size: cover; /* Cover the entire viewport */
-  background-position: center; /* Center the background image */
-  background-repeat: no-repeat; /* Prevent repetition of the background image */
-  color: #fff; /* White text for readability */
-  font-family: Arial, sans-serif;
-  padding: 20px; /* Add some padding for spacing */
-  box-sizing: border-box;
- 
-}
-
-/* Layout for larger screens */
-.left-side, .right-side {
-  width: 100%;
-  max-width: 500px; /* Max width for both sections */
-  margin: 20px;
-  box-sizing: border-box;
-}
-
-/* Main Container */
-.logging {
-  display: flex; /* Arrange child elements in a row */
-  justify-content: space-between; /* Add space between left and right sections */
-  margin-top: 1100px;
-  align-items: center; /* Align items vertically in the center */
-  gap: 100px; /* Adjust spacing between the two sides */
-  height: 100%; /* Full height */
-  padding: 20px;
-  box-sizing: border-box; /* Include padding in the total width and height */
-}
-
-/* Left Side (Explanation) */
-.left-side {
-  flex: 1; /* Allow left side to take available space */
-  max-width: 50%; /* Restrict to 50% of the container width */
-}
-
-/* Explanation Section */
-.explanation {
-  background-color: rgba(255, 255, 255, 0.2); /* Subtle transparent background */
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Shadow effect */
-  text-align: center;
-}
-
-.explanation h2 {
-  font-size: 1.6rem;
-  margin-bottom: 10px;
-  color: #34da3c; /* Bright green */
-}
-
-.explanation p {
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #fff;
-}
-
-/* School Login Style */
-.school-login {
-  text-align: center; /* Center text inside the container */
-  font-size: 1rem; /* Adjust font size */
-  color: #d8e214; /* Bright yellow text */
-  font-weight: bold; /* Make the text bold */
-  font-family: Arial, sans-serif; /* Set the font */
-  padding: 10px 20px; /* Add some padding */
-  border-radius: 12px; /* Rounded corners */
-}
-
-/* Right Side (Login Form) */
-.right-side {
-  flex: 1; /* Allow right side to take available space */
-  max-width: 50%; /* Restrict to 50% of the container width */
-  display: flex; /* Ensure the login form is centered */
-  justify-content: center; /* Center content horizontally */
-  align-items: center; /* Center content vertically */
-}
-
-/* Login Form */
-.login-form {
-  background: rgba(75, 71, 71, 0.8); /* Dark transparent background */
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  width: 100%; /* Take full width of the parent */
-  max-width: 400px; /* Restrict maximum width */
-}
-
-.login-form h2 {
-  font-size: 1.6rem;
-  margin-bottom: 15px;
-  text-align: center;
-  color: #fff;
-}
-
-/* Cards Container */
-.cards-container {
-  margin-top: 30px; /* Space between sections */
-  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 30px; /* Space between sections */
 }
 
-/* Book Cards Section */
-.book-cards h2,
-.video-cards h2 {
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #34da3c; /* Bright green color */
+body {
+  overflow-x: hidden;
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust grid layout */
-  gap: 20px; /* Space between grid items */
-  justify-items: center; /* Center grid items */
+.logging {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('../assest/screening3.jpeg'); /* Corrected relative path */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 }
 
-/* Modal Styles */
-.modal {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 500px;
+.left-side {
+  flex: 1;
+  max-width: 600px;
+  color: white;
+  padding-right: 2rem;
+}
+
+.left-side h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.left-side p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.right-side {
+  flex: 1;
+  max-width: 400px;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards container remains with white background */
+.cards-container {
+  background: #ffffff;
+  padding: 2rem 0;
   width: 100%;
 }
 
-.modal-overlay {
-  background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* Styling for sections containing videos and reading material */
+.book-cards {
+  margin: 2rem auto 3rem; /* Adjusted top margin for separation */
+  width: 90%;
+  background-color: #87de57; /* Light gray background for attractive contrast */
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive Adjustments */
-@media screen and (max-width: 768px) {
-  .login-page {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-                url('../assest/screening3.jpeg'); /* Corrected relative path */
-    background-size: cover; /* Ensure the background still covers */
-    background-position: center; /* Keep the background image centered */
-    background-attachment: fixed; /* Ensure the background is fixed in position */
-    padding: 15px; /* Adjust padding for mobile screens */
-    height: auto; /* Allow height to adjust based on content */
-  }
+.book-cards h2 {
+  margin-left: 2rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  font-size: 1.8rem;
+}
 
+/* Card grid styling */
+.card-grid {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0 2rem 1rem;
+  flex-wrap: wrap; /* Changed from nowrap to wrap */
+  width: 100%;
+  /* overflow-x: auto;  Removed to eliminate horizontal scroll */
+  -ms-overflow-style: auto; /* Optional: Force scrollbar visibility */
+}
+
+/* Card sizing adjustments */
+.book-card, .video-card {
+  flex: 0 0 280px; /* Fixed width, no grow/shrink */
+  width: 280px;
+  transition: transform 0.3s ease;
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.book-card:hover, .video-card:hover {
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
   .logging {
-    flex-direction: column; /* Stack items for smaller screens */
-    height: auto; /* Adjust height */
-    gap: 10px; /* Reduce gap for smaller screens */
-    margin-top: 0px;
+    flex-direction: column;
+    padding: 2rem 1rem;
   }
 
-  .school-app {
-    margin-top: 20px; /* Adjusted margin-top for better visibility on mobile */
-    font-size: 1.5rem; /* Smaller font size for mobile */
+  .left-side {
+    padding-right: 0;
+    margin-bottom: 2rem;
+    text-align: center;
   }
 
-  .left-side, .right-side {
-    max-width: 100%; /* Take full width in mobile view */
+  .right-side {
+    max-width: 100%;
   }
 
-  .login-form {
-    width: 100%; /* Ensure full width */
-    max-width: none; /* Remove max-width for smaller screens */
+  .card-grid {
+    padding: 0 1rem 1rem;
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Radio,
   RadioGroup,
@@ -7,87 +7,80 @@ import {
   Typography,
   Box,
   Card,
-  CardContent, 
+  CardContent,
   FormControl,
   FormLabel,
   Divider,
   FormHelperText,
 } from "@mui/material";
-
-const screeningData = [
-  {
-    id: 1,
-    screeningName: "Auditory",
-    testList: [
-      {
-        disorderName: "Hearing",
-        questions: [
-          "Does the person hear well in a noisy environment?",
-          "Does the person have trouble hearing high-pitched sounds?",
-          "Does the person need to turn up the volume on TV or radio?",
-        ],
-      },
-      {
-        disorderName: "Speech",
-        questions: [
-          "Does the person have difficulty pronouncing words clearly?",
-          "Does the person have a lisp or slurred speech?",
-          "Does the person often stutter or repeat words?",
-        ],
-      },
-      {
-        disorderName: "Language",
-        questions: [
-          "Does the person struggle to form complete sentences?",
-          "Does the person have trouble finding the right words?",
-          "Does the person frequently mispronounce words?",
-        ],
-      },
-    ],
-  },
-];
+import { getScreeningQuestions, saveScreeningResult } from "../api/screeningapi";
+import { useData } from "../utils/DataContext";
+import { useNavigate } from "react-router-dom";
 
 const ScreeningTestData = () => {
   const [formData, setFormData] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState({}); // Tracks Yes/No selections by disorderId
   const [errors, setErrors] = useState({});
+  const [screeningData, setScreeningData] = useState([]);
+  const { clientScreeningData } = useData();
 
-  const handleSelectionChange = (disorderName, value) => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const getQuestions = async () => {
+      const screeningDetails = {
+        screeningId: clientScreeningData.screeningQId,
+        clientAge: clientScreeningData.clientAge,
+      };
+      console.log(screeningDetails);
+      const response = await getScreeningQuestions(screeningDetails);
+      console.log(response);
+      if (response.data) setScreeningData(response.data);
+    };
+
+    getQuestions();
+  }, []);
+
+  const handleSelectionChange = (disorderId, value) => {
     setSelectedOptions((prev) => ({
       ...prev,
-      [disorderName]: value,
+      [disorderId]: value, // Store selection ("Yes" or "No") by disorderId
     }));
 
+    // If "No" is selected, clear any answers for this disorder
     if (value === "No") {
       setFormData((prevData) => {
         const newData = { ...prevData };
-        delete newData[disorderName];
+        delete newData[disorderId];
         return newData;
       });
     }
   };
 
-  const handleRadioChange = (disorderName, question, value) => {
+  const handleRadioChange = (disorderId, question, value) => {
     setFormData((prevData) => ({
       ...prevData,
-      [disorderName]: {
-        ...prevData[disorderName],
+      [disorderId]: {
+        ...prevData[disorderId],
         [question]: value,
       },
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     let formErrors = {};
     screeningData.forEach((screening) => {
       screening.testList.forEach((test) => {
-        if (selectedOptions[test.disorderName] === "Yes") {
+        const disorderId = test.disorderId;
+
+        // Check if "Yes" is selected for this disorder
+        if (selectedOptions[disorderId] === "Yes") {
           test.questions.forEach((question) => {
-            if (!formData[test.disorderName]?.[question]) {
+            if (!formData[disorderId]?.[question]) {
               formErrors = {
                 ...formErrors,
-                [test.disorderName]: {
-                  ...formErrors[test.disorderName],
+                [disorderId]: {
+                  ...formErrors[disorderId],
                   [question]: "This question must be answered.",
                 },
               };
@@ -98,8 +91,37 @@ const ScreeningTestData = () => {
     });
 
     if (Object.keys(formErrors).length === 0) {
-      console.log(formData);
-      alert("Form submitted successfully!");
+      // Extract disorderIds where "Yes" was selected
+      const selectedDisorderIds = screeningData
+        .flatMap((screening) =>
+          screening.testList
+            .filter((test) => selectedOptions[test.disorderId] === "Yes")
+            .map((test) => test.disorderId)
+        );
+      
+      const result = selectedDisorderIds.length>0?"Refer":"Pass"
+
+      const screeningDetails = {
+        "screeningId": clientScreeningData.screeningQId,
+        "participantId": clientScreeningData.clientId,
+        "disorderIds": selectedDisorderIds,   
+        "result":result            
+      };
+
+      console.log("Result:", screeningDetails);
+
+      const response = await saveScreeningResult(screeningDetails);
+      
+      if(response.status == "success")
+      {
+        // alert(response.message);
+        if(screeningDetails.disorderIds=="")
+          alert("Screening Result: Pass")
+        else
+          alert("Screening Result: Refer")
+
+        navigate('/dashboard')
+      }      
     } else {
       setErrors(formErrors);
     }
@@ -134,78 +156,82 @@ const ScreeningTestData = () => {
               {screening.screeningName}
             </Typography>
 
-            {screening.testList.map((test, testIndex) => (
-              <Box key={testIndex} sx={{ marginBottom: 3 }}>
-                {/* Disorder Name + Yes/No on the Right */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 2,
-                  }}
-                >
-                  <FormLabel sx={{ fontWeight: "bold" }}>
-                    {test.disorderName}
-                  </FormLabel>
+            {screening.testList.map((test, testIndex) => {
+              const disorderId = test.disorderId;
 
-                  <RadioGroup
-                    row
-                    value={selectedOptions[test.disorderName] || ""}
-                    onChange={(e) =>
-                      handleSelectionChange(test.disorderName, e.target.value)
-                    }
+              return (
+                <Box key={testIndex} sx={{ marginBottom: 3 }}>
+                  {/* Disorder Name + Yes/No on the Right */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 2,
+                    }}
                   >
-                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                    <FormControlLabel value="No" control={<Radio />} label="No" />
-                  </RadioGroup>
+                    <FormLabel sx={{ fontWeight: "bold" }}>
+                      {test.disorderName}
+                    </FormLabel>
+
+                    <RadioGroup
+                      row
+                      value={selectedOptions[disorderId] || ""}
+                      onChange={(e) =>
+                        handleSelectionChange(disorderId, e.target.value)
+                      }
+                    >
+                      <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                      <FormControlLabel value="No" control={<Radio />} label="No" />
+                    </RadioGroup>
+                  </Box>
+
+                  {/* Questions Section (Shown Only If "Yes" Is Selected) */}
+                  {selectedOptions[disorderId] === "Yes" && (
+                    <>
+                      <Divider sx={{ marginBottom: 2 }} />
+                      {test.questions.map((question, qIndex) => (
+                        <Box
+                          key={qIndex}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: 1,
+                          }}
+                        >
+                          <Typography variant="body2" sx={{ flex: 1 }}>
+                            {`${qIndex + 1}. ${question}`}
+                          </Typography>
+
+                          <FormControl component="fieldset">
+                            <RadioGroup
+                              row
+                              value={formData[disorderId]?.[question] || ""}
+                              onChange={(e) =>
+                                handleRadioChange(
+                                  disorderId,
+                                  question,
+                                  e.target.value
+                                )
+                              }
+                            >
+                              <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+                              <FormControlLabel value="No" control={<Radio />} label="No" />
+                            </RadioGroup>
+                          </FormControl>
+                          {errors[disorderId]?.[question] && (
+                            <FormHelperText>
+                              {errors[disorderId][question]}
+                            </FormHelperText>
+                          )}
+                        </Box>
+                      ))}
+                    </>
+                  )}
                 </Box>
-
-                {/* Questions Section (Shown Only If "Yes" Is Selected) */}
-                {selectedOptions[test.disorderName] === "Yes" && (
-                  <>
-                    <Divider sx={{ marginBottom: 2 }} />
-                    {test.questions.map((question, qIndex) => (
-                      <Box
-                        key={qIndex}
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          marginBottom: 1,
-                        }}
-                      >
-                        <Typography variant="body2" sx={{ flex: 1 }}>
-                          {`${qIndex + 1}. ${question}`}
-                        </Typography>
-
-                        <FormControl component="fieldset">
-                          <RadioGroup
-                            row
-                            value={formData[test.disorderName]?.[question] || ""}
-                            onChange={(e) =>
-                              handleRadioChange(
-                                test.disorderName,
-                                question,
-                                e.target.value
-                              )
-                            }
-                          >
-                            <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                            <FormControlLabel value="No" control={<Radio />} label="No" />
-                          </RadioGroup>
-                        </FormControl>
-                        {errors[test.disorderName]?.[question] && (
-                          <FormHelperText>
-                            {errors[test.disorderName][question]}
-                          </FormHelperText>
-                        )}
-                      </Box>
-                    ))}
-                  </>
-                )}
-              </Box>
-            ))}
+              );
+            })}
           </CardContent>
 
           {/* Submit Button */}

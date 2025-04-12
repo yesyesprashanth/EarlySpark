@@ -46,7 +46,7 @@ async def get_db():
 async def create_tables():
     try:
         async with engine.begin() as conn:
-            from app.models import hub, center
+            from app.models import hub, center, node, facilitator, clinician, participant, participant_group, department, disorder, screening, screening_questions
             await conn.run_sync(Base.metadata.create_all)
         logger.info("Database tables created successfully.")
     except Exception as e:

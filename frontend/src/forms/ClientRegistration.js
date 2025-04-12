@@ -1,23 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Container, Button, Grid, Typography, Box, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import {useData} from '../utils/DataContext';
+import {registerParticipant} from '../api/userapi';
+import { getScreeningQuestionnaireList } from '../api/screeningapi';
 
 const ClientRegistration = () => {
+
+  const [screeningQList, setScreeningQList] = useState([{
+    "id":1,
+    "screening_name":"screening Test"
+  }])
+
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    gender: '',
-    class: '',
+    participantId: '',
+    participantName: '',
+    participantAge: '',
+    gender: '',   
+    phone:'',
+    screeningQId: 1     
   });
 
   const navigate = useNavigate()
+  const { userData, updateClientScreeningData } = useData()
 
   const [errors, setErrors] = useState({
-    name: false,
-    age: false,
-  });
+    participantId: false,
+    participantName: false,
+    participantAge: false,
+  });  
+  
 
-  const classes = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th']; // Class options
+  useEffect(()=>{
+    const getScreeningList = async () =>{
+      const response = await getScreeningQuestionnaireList(userData.organizationId)
+      console.log(response);
+      console.log(response.data);
+      setScreeningQList(response.data)
+
+      //update screeningQid to first position
+      setFormData((prevData) => ({
+        ...prevData,
+        screeningQId: response.data[0].id,
+      }));
+    }
+    getScreeningList()
+  },[])
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,31 +55,48 @@ const ClientRegistration = () => {
     setFormData({ ...formData, [name]: value });
 
     // Validate inputs
-    if (name === 'name') {
+    if (name === 'participantName') {
       const isValidName = /^[a-zA-Z\s]+$/.test(value);
       setErrors((prevErrors) => ({ ...prevErrors, name: !isValidName }));
     }
 
-    if (name === 'age') {
+    if (name === 'participantAge') {
       const isValidAge = /^[0-9]+$/.test(value);
       setErrors((prevErrors) => ({ ...prevErrors, age: !isValidAge }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     // Final validation check
-    const isValidName = /^[a-zA-Z\s]+$/.test(formData.name);
-    const isValidAge = /^[0-9]+$/.test(formData.age);
+    const isValidName = /^[a-zA-Z\s]+$/.test(formData.participantName);
+    const isValidAge = /^[0-9]+$/.test(formData.participantAge);
 
     if (!isValidName || !isValidAge) {      
       return;
     }
 
-    console.log('Submitted Data:', formData);
-    navigate("/screeningtest")
+    const participantData = {
+      participantId: formData.participantId,
+      participantName: formData.participantName,
+      participantAge: formData.participantAge,
+      gender: formData.gender,
+      phone:formData.phone,
+      group_id:1,
+      nodeId:userData.organizationId
+    };
 
+    updateClientScreeningData({
+      screeningQId:formData.screeningQId,
+      clientId:formData.participantId,
+      clientAge:formData.participantAge
+    })
+
+    const response = await registerParticipant(participantData)
+    console.log(response);          
+    console.log('Submitted Data:', formData);
+    navigate(`/ScreeningTestData`)
   };
 
   return (
@@ -62,14 +108,28 @@ const ClientRegistration = () => {
         </Typography>
         <form onSubmit={handleSubmit} noValidate>
           <Grid container spacing={2}>
+          <Grid item xs={12}>
+              <TextField
+                label="Client Id"
+                name="participantId"
+                value={formData.participantId}
+                onChange={handleInputChange}
+                error={errors.participantId}
+                helperText={errors.name ? 'Id is required and must contain only alphabets.' : ''}
+                fullWidth
+                variant="outlined"
+                size="small"
+
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 label="Name"
-                name="name"
-                value={formData.name}
+                name="participantName"
+                value={formData.participantName}
                 onChange={handleInputChange}
-                error={errors.name}
-                helperText={errors.name ? 'Name is required and must contain only alphabets.' : ''}
+                error={errors.participantName}
+                helperText={errors.participantName ? 'Name is required and must contain only alphabets.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
@@ -80,11 +140,11 @@ const ClientRegistration = () => {
             <Grid item xs={12}>
               <TextField
                 label="Age"
-                name="age"
-                value={formData.age}
+                name="participantAge"
+                value={formData.participantAge}
                 onChange={handleInputChange}
-                error={errors.age}
-                helperText={errors.age ? 'Age is required and must be a number.' : ''}
+                error={errors.participantAge}
+                helperText={errors.participantAge ? 'Age is required and must be a number.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
@@ -121,15 +181,26 @@ const ClientRegistration = () => {
                 </Select>
               </FormControl>
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}                
+                fullWidth
+                variant="outlined"
+                size="small"
+              />
+            </Grid>
 
             <Grid item xs={12}>
               <FormControl fullWidth>
-                <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>Class</InputLabel>
+                <InputLabel sx={{ fontSize: "14px", top: "-5px" }}>Screening Questionnaire</InputLabel>
                 <Select
-                  name="class" // Keep this as "class"
-                  value={formData.class} // Ensure it matches state
+                  name="screeningQid" // Change from "class" to "gender"
+                  value={formData.screeningQId} // Ensure it matches state
                   onChange={handleInputChange}
-                  label="Class"
+                  label="screeningQid"
                   size="small"
                   variant="outlined"
                   MenuProps={{
@@ -144,22 +215,15 @@ const ClientRegistration = () => {
                     color: 'black',
                   }}
                   required
-                >
-                  <MenuItem value="">
-                    <em>Select Class</em>
-                  </MenuItem>
-                  {classes.map((classOption, index) => (
-                    <MenuItem key={index} value={classOption} style={{ color: 'black' }}>
-                      {classOption}
+                >                  
+                  {screeningQList.map((screeningQ, index) => (
+                    <MenuItem key={index} value={screeningQ.id}>
+                      {screeningQ.screening_name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
-
             </Grid>
-
-
-
 
 
             <Grid item xs={12}>

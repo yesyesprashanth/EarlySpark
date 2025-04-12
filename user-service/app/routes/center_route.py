@@ -13,5 +13,11 @@ def get_center_controller(db:AsyncSession=Depends(get_db))->CenterController:
 
 
 @router.post('/', response_model=StandardResponse)
-async def create_center_route(center_data:CenterCreateRequest)->StandardResponse:
-    return CenterController.create_center_controller(center_data)
+async def create_center_route(center_data:CenterCreateRequest, center_controller = Depends(get_center_controller))->StandardResponse:
+    print(center_data)
+    return await center_controller.create_center_controller(center_data)
+
+
+@router.get('/by-hub/{hub_id}', response_model=StandardResponse)
+async def get_centers_by_hub(hub_id: str, center_controller: CenterController = Depends(get_center_controller)):
+    return await center_controller.get_centers_by_hub_controller(hub_id)

@@ -2,52 +2,62 @@
 
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Grid, Container } from '@mui/material';
+import { useData } from '../utils/DataContext';
+import { registerClinician } from '../api/userapi';
 
 const ClinicianRegistration = () => {
+  const { userData } = useData();
   const [formData, setFormData] = useState({
-    rciId: '',
-    name: '',
+    clinicianId: '',
+    clinicianName: '',
     phone: '',
-    email: '',
-    centerId:'',
+    emailId: '',      
   });
 
   const [errors, setErrors] = useState({
-    rciId: false,
-    name: false,
+    clinicianId: false,
+    clinicianName: false,
     phone: false,
-    email: false,
-    centerId:false,
+    emailId: false,   
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
     // Validation for specific fields
-    if (name === 'name' && !/^[A-Za-z\s]*$/.test(value)) return;
+    if (name === 'clinicianName' && !/^[A-Za-z\s]*$/.test(value)) return;
     if (name === 'phone' && !/^\d*$/.test(value)) return;
 
     setFormData({ ...formData, [name]: value });
     setErrors((prevErrors) => ({ ...prevErrors, [name]: false }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     // Check for empty fields
     const newErrors = {
-      rciId: formData.rciId.trim() === '',
-      name: formData.name.trim() === '' || !/^[A-Za-z\s]+$/.test(formData.name),
+      clinicianId: formData.clinicianId.trim() === '',
+      clinicianName: formData.clinicianName.trim() === '' || !/^[A-Za-z\s]+$/.test(formData.clinicianName),
       phone: formData.phone.trim() === '' || !/^\d{10}$/.test(formData.phone),
-      email: formData.email.trim() === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email),
-      centerId: formData.centerId.trim() === '',
+      email: formData.emailId.trim() === '' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailId),     
     };
 
     setErrors(newErrors);
 
     if (!Object.values(newErrors).some((error) => error)) {
-      console.log('Submitted Data:', formData);
-      alert('Clinician Registration successful!');
+
+      const clinicianData = {
+        clinicianId: formData.clinicianId,
+        clinicianName: formData.clinicianName,
+        phone: formData.phone,
+        emailId: formData.emailId,
+        centerId: userData.userId
+      };     
+      
+      const response = await registerClinician(clinicianData)      
+      console.log(response);          
+      alert('Registration successful!');        
     }
   };
 
@@ -63,11 +73,11 @@ const ClinicianRegistration = () => {
             <Grid item xs={12}>
               <TextField
                 label="RCI ID"
-                name="rciId"
-                value={formData.rciId}
+                name="clinicianId"
+                value={formData.clinicianId}
                 onChange={handleInputChange}
-                error={errors.rciId}
-                helperText={errors.rciId ? 'RCI ID is required.' : ''}
+                error={errors.clinicianId}
+                helperText={errors.clinicianId ? 'RCI ID is required.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
@@ -76,11 +86,11 @@ const ClinicianRegistration = () => {
             <Grid item xs={12}>
               <TextField
                 label="Name"
-                name="name"
-                value={formData.name}
+                name="clinicianName"
+                value={formData.clinicianName}
                 onChange={handleInputChange}
-                error={errors.name}
-                helperText={errors.name ? 'Name must contain only alphabets.' : ''}
+                error={errors.clinicianName}
+                helperText={errors.clinicianName ? 'Name must contain only alphabets.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
@@ -102,29 +112,16 @@ const ClinicianRegistration = () => {
             <Grid item xs={12}>
               <TextField
                 label="Email ID"
-                name="email"
-                value={formData.email}
+                name="emailId"
+                value={formData.emailId}
                 onChange={handleInputChange}
-                error={errors.email}
-                helperText={errors.email ? 'A valid email is required.' : ''}
+                error={errors.emailId}
+                helperText={errors.emailId ? 'A valid email is required.' : ''}
                 fullWidth
                 variant="outlined"
                 size="small"
               />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Center Id"
-                name="centerId"
-                value={formData.rciId}
-                onChange={handleInputChange}
-                error={errors.rciId}
-                helperText={errors.rciId ? 'RCI ID is required.' : ''}
-                fullWidth
-                variant="outlined"
-                size="small"
-              />
-            </Grid>
+            </Grid>           
             <Grid item xs={12}>
               <Button type="submit" variant="contained" color="primary" fullWidth>
                 Submit

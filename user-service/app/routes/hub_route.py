@@ -30,6 +30,9 @@ def get_hello_world():
 async def create_hub(hub_data:HubCreateRequest, HubController = Depends(get_hub_controller)):
     return await HubController.create_hub_controller(hub_data)
     
+@router.get('/list-hub', response_model=StandardResponse)
+async def list_hub(HubController = Depends(get_hub_controller)):
+    return await HubController.list_hub_controller()
     
 
 

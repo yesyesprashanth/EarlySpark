@@ -1,22 +1,21 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-import './VideoCard.css'; // Import the CSS file
+import { useNavigate } from 'react-router-dom';
+import './BookCard.css'; // Reuse BookCard styles
 
-const VideoCard = ({ title,thumbnail}) => {
-  const navigate = useNavigate(); // Initialize navigate function
+const VideoCard = ({ title, thumbnail, videoUrl, onClick }) => {
+  const navigate = useNavigate();
 
   const handleMoreInfoClick = () => {
-    navigate('/libraryvideo'); // Navigate to the library route
+    navigate('/libraryvideo');
   };
 
   return (
-    <div className="video-card">
-      <img className="video-thumbnail" src={thumbnail} alt="Video Thumbnail" />
-      <div className="video-info">
-        <h3 className="video-title">{title}</h3>
-    
+    <div className="book-card" onClick={onClick}>
+      <img className="book-cover" src={thumbnail} alt="Video Thumbnail" />
+      <div className="book-info">
+        <h3 className="book-title">{title}</h3>
         <button onClick={handleMoreInfoClick} className="info-button">
-           Watch Video
+          Watch Video
         </button>
       </div>
     </div>

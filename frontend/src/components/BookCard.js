@@ -23,15 +23,17 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import './BookCard.css'; // Import the CSS file
 
-const BookCard = ({ title, author, description, coverImage }) => {
+const BookCard = ({ title, author, description, coverImage, onClick }) => {
   const navigate = useNavigate(); // Initialize navigate function
 
   const handleMoreInfoClick = () => {
     navigate('/library'); // Navigate to the library route
   };
 
+
+
   return (
-    <div className="book-card">
+    <div className="book-card" onClick={onClick}>
       <img className="book-cover" src={coverImage} alt="Book Cover" />
       <div className="book-info">
         <h3 className="book-title">{title}</h3>

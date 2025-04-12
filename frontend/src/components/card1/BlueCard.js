@@ -4,9 +4,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom"; // Import useNavigate from React Router
 
 const columns = [
-  { field: "id", headerName: "ID", flex: 0.5, headerClassName: 'small-font' },
-  { field: "name", headerName: "Name", flex: 1, headerClassName: 'small-font' },
-  { field: "department", headerName: "Department", flex: 1.5, headerClassName: 'small-font' },
+  { field: "participant_id", headerName: "ID", flex: 0.5, headerClassName: 'small-font' },
+  { field: "participant_name", headerName: "Name", flex: 1, headerClassName: 'small-font' },
+  { field: "referred_disorder_names", headerName: "Referred disorders", flex: 1.5, headerClassName: 'small-font' },
   {
     field: "action",
     headerName: "Actions",
@@ -24,20 +24,14 @@ const columns = [
   },
 ];
 
-const rows = [
-  { id: 1, name: 'Material 1', department: 'Science' },
-  { id: 2, name: 'Material 2', department: 'Mathematics' },
-  { id: 3, name: "Charlie", department: 'English' },
-];
-
-const ExaminerCard = () => {
+const BlueCard = ({caseList, cardName}) => {
   const [search, setSearch] = useState("");
-  const [filteredRows, setFilteredRows] = useState(rows); // Store filtered rows
+  const [filteredRows, setFilteredRows] = useState(caseList); // Store filtered rows
   const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleSearch = () => {
     // Perform the search when Search button is clicked
-    const searchResults = rows.filter((row) =>
+    const searchResults = caseList.filter((row) =>
       row.name.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredRows(searchResults); // Update the filtered rows
@@ -47,7 +41,7 @@ const ExaminerCard = () => {
     <Card sx={{ color: "#000", width: "100%", height: "100%", display: "flex", flexDirection: "column" }}>
       <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <Typography variant="h6" align="center" gutterBottom >
-         Examiner List
+         {cardName}
         </Typography>
 
         <Grid container spacing={1} alignItems="center" sx={{ maxWidth: 500, margin: "auto" }}>
@@ -68,7 +62,7 @@ const ExaminerCard = () => {
             </Button>
           </Grid>
           <Grid item xs={3}>
-            <Button variant="contained" color="primary" fullWidth onClick={() => navigate("/examiner")}>
+            <Button variant="contained" color="primary" fullWidth onClick={() => navigate("/material")}>
               Create
             </Button>
           </Grid>
@@ -93,4 +87,4 @@ const ExaminerCard = () => {
   );
 };
 
-export default ExaminerCard;
+export default BlueCard;

@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import RegistrationModal from '../components/RegistrationModal';
 import { useData } from '../utils/DataContext'; // Import useData hook
+import { verifyUser } from '../api/userapi';
 
 Modal.setAppElement('#root');
 
@@ -17,33 +18,49 @@ export default function LoginCard() {
   const navigate = useNavigate();
 
   const roleMapping = {
-    'institute@gmail.com': 'Institute',
-    'prashanth@gmail.com': 'School',
+    'center@gmail.com': 'Institute',
+    'node@gmail.com': 'School',
     'teacher@gmail.com': 'Teacher',
     'clinician@gmail.com': 'Clinician',
-    'nodal@gmail.com':'nodal'
+    'nodal@gmail.com': 'nodal'
   };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (email in roleMapping && password === '1234') {
-      const role = roleMapping[email]; // Get the role from the mapping
 
-      // Update user data in the context
-      updateUserData({
-        role,
-        name: email.split('@')[0], // You can customize the name if needed
-        email,
-      });
+    const userCredentials = {
+      emailId: email,
+      password: password,
+    };
 
-   
-      navigate('/dashboard');
-    } else {
+    try {
+      const response = await verifyUser(userCredentials);
+
+      console.log(JSON.stringify(response.data))
+
+      if (response.data) {
+        const userDetails = {
+          "roleId": response.data.user_type,
+          "userId": response.data.user_id,
+          "emailId": response.data.email_id,
+          "organizationId": response.data.organization_id
+        }
+
+        console.log(`user details ${JSON.stringify(userDetails)}`)
+        
+        updateUserData(userDetails);
+        navigate('/dashboard');
+      }
+      else
+        alert('Invalid email or password');
+
+    } catch (error) {
+      console.log(error);
       alert('Invalid email or password');
-    }
+    }    
   };
 
   return (
